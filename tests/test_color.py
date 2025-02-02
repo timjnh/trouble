@@ -1,4 +1,4 @@
-from color import Color
+from trouble import Color
 
 class TestColor:
     class TestOrdinal:

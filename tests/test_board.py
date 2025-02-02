@@ -1,6 +1,4 @@
-from board import Board
-from peg import Peg
-from color import Color
+from trouble import Board, Peg, Color
 
 class TestBoard:
     class TestReset:

@@ -1,7 +1,7 @@
 from typing import List, Dict
 
-from peg import Peg
-from color import Color
+from .peg import Peg
+from .color import Color
 
 class Board:
     FULL_TRACK_LENGTH = 32 # includes the final four slots

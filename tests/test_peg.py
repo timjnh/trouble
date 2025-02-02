@@ -1,5 +1,4 @@
-from peg import Peg
-from color import Color
+from trouble import Peg, Color
 
 class TestPeg:
     class TestIsOnboard:

@@ -1,7 +1,4 @@
-from game import Game
-from board import Board
-from peg import Peg
-from color import Color
+from trouble import Game, Board, Peg, Color
 
 class TestGame:
     class TestWinner:

@@ -1,4 +1,4 @@
-from color import Color
+from .color import Color
 
 class Peg:
     def __init__(self, color: Color):
