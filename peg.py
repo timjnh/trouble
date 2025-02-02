@@ -3,7 +3,7 @@ from color import Color
 class Peg:
     def __init__(self, color: Color):
         self.color = color
-        self._position: int | None = None
+        self._position: int | None = None # represents the position of the peg on its own track (including the four final slots)
 
     def reset(self):
         self._position = None

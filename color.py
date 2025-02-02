@@ -1,7 +1,11 @@
 from enum import StrEnum
 
 class Color(StrEnum):
-  RED = 'red'
-  BLUE = 'blue'
-  GREEN = 'green'
-  YELLOW = 'yellow'
+    RED = 'red'
+    GREEN = 'green'
+    YELLOW = 'yellow'
+    BLUE = 'blue'
+
+    @classmethod
+    def ordinal(cls, c: "Color") -> int:
+        return list(Color).index(c)
