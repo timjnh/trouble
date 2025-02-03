@@ -6,3 +6,7 @@ Implements the board game trouble
 
     source .venv/bin/activate
     pip install -r requirements.txt
+
+# Tests
+
+    PYTHONPATH=$(pwd) wexec pytest
