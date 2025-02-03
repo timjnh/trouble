@@ -32,6 +32,9 @@ class Board:
     def pegs(self) -> List[Peg]:
         return [peg for peg_list in self.pegs_by_color.values() for peg in peg_list]
 
+    def get_pegs_on_board(self, color: Color) -> List[Peg]:
+        return [p for p in self.pegs_by_color[color] if p.is_on_board and p.position is not None and p.position < self.INTERIOR_TRACK_LENGTH]
+
     def get_pegs_on_deck(self, color: Color) -> List[Peg]:
         return [p for p in self.pegs_by_color[color] if p.is_on_deck]
     

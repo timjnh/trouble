@@ -36,6 +36,36 @@ class TestBoard:
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
             assert len(board.get_pegs_on_deck(Color.GREEN)) == 1
 
+    class TestGetPegsOnBoard:
+        def test_returns_all_pegs_on_board(self):
+            red_peg_on_board = Peg(Color.RED)
+            red_peg_on_board.position = 0
+
+            red_peg_on_deck = Peg(Color.RED)
+
+            red_peg_in_final_slot = Peg(Color.RED)
+            red_peg_in_final_slot.position = Board.FULL_TRACK_LENGTH - 1
+
+            board = Board()
+            board.add_pegs([red_peg_on_board, red_peg_on_deck, red_peg_in_final_slot])
+
+            assert len(board.get_pegs_on_board(Color.RED)) == 1
+
+    class TestGetPegsOnDeck:
+        def test_returns_all_pegs_on_deck(self):
+            red_peg_on_deck = Peg(Color.RED)
+
+            red_peg_on_board = Peg(Color.RED)
+            red_peg_on_board.position = 0
+
+            red_peg_in_final_slot = Peg(Color.RED)
+            red_peg_in_final_slot.position = Board.FULL_TRACK_LENGTH - 1
+
+            board = Board()
+            board.add_pegs([red_peg_on_board, red_peg_on_deck, red_peg_in_final_slot])
+
+            assert len(board.get_pegs_on_deck(Color.RED)) == 1
+
     class TestGetPegsInFinalSlots:
         def test_returns_pegs_in_final_slots_matching_given_color(self):
             red_peg_1 = Peg(Color.RED)
