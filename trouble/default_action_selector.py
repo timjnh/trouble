@@ -9,8 +9,11 @@ class DefaultActionSelector(ActionSelector):
 
         # TODO: randomize the behavior here
         if die_roll == 6:
+            global_starting_position = board.get_global_peg_position_for_color(0, color)
+            peg_at_starting_position = board.get_peg_at_global_position(global_starting_position)
+
             on_deck_pegs = board.get_pegs_on_deck(color)
-            if len(on_deck_pegs) > 0:
+            if (peg_at_starting_position is None or peg_at_starting_position.color != color) and len(on_deck_pegs) > 0:
                 return MoveToBoardAction(on_deck_pegs[0], board)
 
         return NoneAction()
