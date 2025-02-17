@@ -8,6 +8,9 @@ class Peg:
     def reset(self):
         self._position = None
 
+    def move_to_on_deck(self):
+        self._position = None
+
     @property
     def position(self) -> int | None:
         return self._position

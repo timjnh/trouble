@@ -151,6 +151,34 @@ class TestBoard:
 
             assert board.get_global_peg_position(peg) == 0
 
+    class TestGetGlobalPegPositionForColor:
+        def test_returns_the_global_position_for_the_given_local_position_and_color(self):
+            board = Board()
+
+            assert board.get_global_peg_position_for_color(0, Color.RED) == 0
+            assert board.get_global_peg_position_for_color(0, Color.GREEN) == 7
+            assert board.get_global_peg_position_for_color(0, Color.YELLOW) == 14
+            assert board.get_global_peg_position_for_color(0, Color.BLUE) == 21
+
+            assert board.get_global_peg_position_for_color(27, Color.RED) == 27
+            assert board.get_global_peg_position_for_color(27, Color.GREEN) == 6
+            assert board.get_global_peg_position_for_color(27, Color.YELLOW) == 13
+            assert board.get_global_peg_position_for_color(27, Color.BLUE) == 20
+
+    class TestGetLocalPegPositionForColor:
+        def test_returns_the_local_position_for_the_given_global_position_and_color(self):
+            board = Board()
+
+            assert board.get_local_peg_position_for_color(0, Color.RED) == 0
+            assert board.get_local_peg_position_for_color(7, Color.GREEN) == 0
+            assert board.get_local_peg_position_for_color(14, Color.YELLOW) == 0
+            assert board.get_local_peg_position_for_color(21, Color.BLUE) == 0
+
+            assert board.get_local_peg_position_for_color(27, Color.RED) == 27
+            assert board.get_local_peg_position_for_color(6, Color.GREEN) == 27
+            assert board.get_local_peg_position_for_color(13, Color.YELLOW) == 27
+            assert board.get_local_peg_position_for_color(20, Color.BLUE) == 27
+
     class TestGetPegAtGlobalPosition:
         def test_returns_none_if_no_peg_at_global_position(self):
             peg = Peg(Color.RED)

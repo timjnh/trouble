@@ -1,5 +1,7 @@
-from trouble import Game, Board, Peg, Color, DefaultActionSelector, DefaultDie
-from mock_die import MockDie
+from typing import List, Dict
+
+from trouble import Game, Board, Peg, Color, DefaultDie, DefaultActionSelector, MoveToBoardAction
+from mock_action_selector import MockActionSelector
 
 class TestGame:
     class TestReset:
@@ -52,13 +54,15 @@ class TestGame:
 
     class TestTakeTurn:
         def test_should_advance_the_next_color_by_the_die_roll(self):
-            pegs = [[Peg(c) for _ in range(4)] for c in Color]
+            pegs: Dict[Color, List[Peg]] = {}
+            for c in Color:
+                pegs[c] = [Peg(c) for _ in range(4)]
 
             board = Board()
-            board.add_pegs([peg for color_pegs in pegs for peg in color_pegs])
+            board.add_pegs([peg for color_pegs in pegs.values() for peg in color_pegs])
 
-            # TODO: implement a MockActionSelector that will always return particular actions
-            game = Game(board, DefaultActionSelector(MockDie(rolls=[6])))
+            on_deck_red_peg = pegs[Color.RED][0]
+            game = Game(board, MockActionSelector([MoveToBoardAction(on_deck_red_peg, board)]))
 
             game.take_turn()
 

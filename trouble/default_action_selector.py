@@ -11,6 +11,6 @@ class DefaultActionSelector(ActionSelector):
         if die_roll == 6:
             on_deck_pegs = board.get_pegs_on_deck(color)
             if len(on_deck_pegs) > 0:
-                return MoveToBoardAction(on_deck_pegs[0])
+                return MoveToBoardAction(on_deck_pegs[0], board)
 
         return NoneAction()

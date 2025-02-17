@@ -7,10 +7,12 @@ __all__ = [
     "DefaultActionSelector"
 ]
 
-from .board import Board
-from .peg import Peg
-from .color import Color
-from .game import Game
-from .default_die import DefaultDie
-from .default_action_selector import DefaultActionSelector
+from .board import *
+from .peg import *
+from .color import *
+from .game import *
+from .default_die import *
+from .default_action_selector import *
 from .actions import *
+from .action_selector import *
+from .die import *
