@@ -20,9 +20,9 @@ class Board:
         for p in pegs:
             assert p.position is None or p.position < self.FULL_TRACK_LENGTH
 
-            global_position = self.get_global_peg_position(p)
-            if global_position is not None:
-                assert not self.get_peg_at_global_position(global_position)
+            board_position = self.get_board_peg_position(p)
+            if board_position is not None:
+                assert not self.get_peg_at_board_position(board_position)
 
             if p.color not in self.pegs_by_color:
                 self.pegs_by_color[p.color] = []
@@ -43,29 +43,29 @@ class Board:
             return []
         return [p for p in self.pegs_by_color[color] if p.position is not None and p.position >= self.FULL_TRACK_LENGTH - 4]
     
-    def get_global_peg_position(self, peg: Peg) -> int | None:
+    def get_board_peg_position(self, peg: Peg) -> int | None:
         if peg.position is None:
             return None
 
         if peg.position >= self.FULL_TRACK_LENGTH - 4:
             return None
         
-        return self.get_global_peg_position_for_color(peg.position, peg.color)
+        return self.track_position_to_board_position(peg.position, peg.color)
     
-    def get_global_peg_position_for_color(self, local_position: int, color: Color) -> int:
+    def track_position_to_board_position(self, track_position: int, color: Color) -> int:
         color_offset = int(self.INTERIOR_TRACK_LENGTH / 4)
-        return (local_position + Color.ordinal(color) * color_offset) % Board.INTERIOR_TRACK_LENGTH
+        return (track_position + Color.ordinal(color) * color_offset) % Board.INTERIOR_TRACK_LENGTH
     
-    def get_local_peg_position_for_color(self, global_position: int, color: Color) -> int:
+    def board_position_to_track_position(self, board_position: int, color: Color) -> int:
         color_offset = int(self.INTERIOR_TRACK_LENGTH / 4)
-        global_color_start_position = Color.ordinal(color) * color_offset
-        if global_position >= global_color_start_position:
-            return global_position - global_color_start_position
+        board_start_position = Color.ordinal(color) * color_offset
+        if board_position >= board_start_position:
+            return board_position - board_start_position
         else:
-            return global_position + (Board.INTERIOR_TRACK_LENGTH - global_color_start_position)
+            return board_position + (Board.INTERIOR_TRACK_LENGTH - board_start_position)
         
-    def get_peg_at_global_position(self, global_position: int) -> Peg | None:
+    def get_peg_at_board_position(self, board_position: int) -> Peg | None:
         for peg in self.pegs:
-            if self.get_global_peg_position(peg) == global_position:
+            if self.get_board_peg_position(peg) == board_position:
                 return peg
         return None

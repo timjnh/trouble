@@ -23,8 +23,8 @@ class TestMoveToBoardAction:
             board = Board()
             board.add_pegs([red_peg, green_peg])
 
-            global_red_start_position = board.get_global_peg_position_for_color(0, Color.RED)
-            green_peg.position = board.get_local_peg_position_for_color(global_red_start_position, Color.GREEN)
+            red_board_start_position = board.track_position_to_board_position(0, Color.RED)
+            green_peg.position = board.board_position_to_track_position(red_board_start_position, Color.GREEN)
 
             action = MoveToBoardAction(red_peg, board)
             action.apply()
