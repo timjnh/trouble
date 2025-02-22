@@ -1,7 +1,6 @@
-from typing import List, Dict
-
-from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction
+from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction, MoveAction
 from mock_action_selector import MockActionSelector
+from mock_die import MockDie
 
 class TestGame:
     class TestReset:
@@ -48,28 +47,40 @@ class TestGame:
             assert game.winner is None
 
     class TestTakeTurn:
-        def test_should_move_the_next_color_based_on_the_die_roll(self):
-            pegs: Dict[Color, List[Peg]] = {}
-            for c in Color:
-                pegs[c] = [Peg(c) for _ in range(4)]
+        def test_should_move_the_current_color_based_on_the_die_roll(self):
+            red_peg = Peg(Color.RED)
 
             board = Board()
-            for peg in [peg for color_pegs in pegs.values() for peg in color_pegs]:
-                board.add_peg(peg)
+            board.add_peg_at_track_position(red_peg, 0)
 
             actions = [
                 SelectedAction(
-                    MoveToBoardAction(6, Color.RED, board),
-                    pegs[Color.RED][0]
+                    MoveAction(1, Color.RED, board),
+                    red_peg
                 )
             ]
-            game = Game(board, MockActionSelector(actions), DefaultDie())
+            game = Game(board, MockActionSelector(actions), MockDie([1]))
 
             game.take_turn()
 
             assert game.current_color == Color.GREEN
-            assert len(board.get_pegs_on_deck(Color.RED)) == 3
-            
-            pegs_on_board = board.get_pegs_on_board(Color.RED)
-            assert len(pegs_on_board) == 1
-            assert board.get_track_position_for_peg(pegs_on_board[0]) == 0
+            assert board.get_track_position_for_peg(red_peg) == 1
+
+        def test_should_not_advance_the_current_color_if_a_6_is_rolled(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg(red_peg)
+
+            actions = [
+                SelectedAction(
+                    MoveToBoardAction(6, Color.RED, board),
+                    red_peg
+                )
+            ]
+            game = Game(board, MockActionSelector(actions), MockDie([6]))
+
+            game.take_turn()
+
+            assert game.current_color == Color.RED
+            assert board.get_track_position_for_peg(red_peg) == 0
