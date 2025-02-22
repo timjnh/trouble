@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from .color import Color
 from .board import Board
-from .die import Die
 from .actions import Action
 from .peg import Peg
 
@@ -21,9 +20,6 @@ class SelectedAction:
             self.action.apply(self.peg)
 
 class ActionSelector(ABC):
-    def __init__(self, die: Die):
-        self.die = die
-
     @abstractmethod
-    def select_action(self, color: Color, board: Board) -> SelectedAction:
+    def select_action(self, color: Color, board: Board, die_roll: int) -> SelectedAction:
         pass

@@ -1,15 +1,13 @@
-from typing import List, Optional
+from typing import List
 
-from trouble import ActionSelector, SelectedAction, Die, Color, Board, DefaultDie
+from trouble import ActionSelector, SelectedAction, Color, Board
 
 class MockActionSelector(ActionSelector):
-    def __init__(self, actions: List[SelectedAction], die: Optional[Die] = None):
-        super().__init__(die or DefaultDie())
-
+    def __init__(self, actions: List[SelectedAction]):
         self.actions = actions
         self._position = 0
 
-    def select_action(self, color: Color, board: Board) -> SelectedAction:
+    def select_action(self, color: Color, board: Board, die_roll: int) -> SelectedAction:
         action = self.actions[self._position]
         if self._position < len(self.actions) - 1:
             self._position += 1
