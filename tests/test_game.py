@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from trouble import Game, Board, Peg, Color, DefaultDie, DefaultActionSelector, MoveToBoardAction
+from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction
 from mock_action_selector import MockActionSelector
 
 class TestGame:
@@ -11,7 +11,7 @@ class TestGame:
             board = Board()
             board.add_peg_at_track_position(peg, 0)
 
-            game = Game(board, DefaultActionSelector(DefaultDie()))
+            game = Game(board, RandomActionSelector(DefaultDie()))
 
             game.reset()
 
@@ -26,7 +26,7 @@ class TestGame:
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 1))
 
-            game = Game(board, DefaultActionSelector(DefaultDie()))
+            game = Game(board, RandomActionSelector(DefaultDie()))
 
             assert game.winner == Color.RED
 
@@ -37,13 +37,13 @@ class TestGame:
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 2)) # only 3 in final slots
 
-            game = Game(board, DefaultActionSelector(DefaultDie()))
+            game = Game(board, RandomActionSelector(DefaultDie()))
 
             assert game.winner == None
 
         def test_returns_none_when_board_has_no_pegs(self):
             board = Board()
-            game = Game(board, DefaultActionSelector(DefaultDie()))
+            game = Game(board, RandomActionSelector(DefaultDie()))
 
             assert game.winner is None
 

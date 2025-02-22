@@ -3,7 +3,7 @@ from .board import Board
 from .color import Color
 from .actions import Action, MoveToBoardAction, NoneAction
 
-class DefaultActionSelector(ActionSelector):
+class RandomActionSelector(ActionSelector):
     def select_action(self, color: Color, board: Board) -> Action:
         die_roll = self.die.roll()
 
