@@ -7,10 +7,9 @@ class TestGame:
     class TestReset:
         def test_should_reset_the_board_and_set_current_color_to_red(self):
             peg = Peg(Color.RED)
-            peg.position = 0
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg_at_track_position(peg, 0)
 
             game = Game(board, DefaultActionSelector(DefaultDie()))
 
@@ -25,9 +24,7 @@ class TestGame:
 
             red_pegs = [Peg(Color.RED) for _ in range(4)]
             for i, peg in enumerate(red_pegs):
-                peg.position = Board.FULL_TRACK_LENGTH - (i + 1)
-
-            board.add_pegs(red_pegs)
+                board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 1))
 
             game = Game(board, DefaultActionSelector(DefaultDie()))
 
@@ -38,9 +35,7 @@ class TestGame:
 
             red_pegs = [Peg(Color.RED) for _ in range(4)]
             for i, peg in enumerate(red_pegs):
-                peg.position = Board.FULL_TRACK_LENGTH - (i + 2) # only 3 in final slots
-
-            board.add_pegs(red_pegs)
+                board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 2)) # only 3 in final slots
 
             game = Game(board, DefaultActionSelector(DefaultDie()))
 
@@ -53,13 +48,14 @@ class TestGame:
             assert game.winner is None
 
     class TestTakeTurn:
-        def test_should_advance_the_next_color_by_the_die_roll(self):
+        def test_should_move_the_next_color_based_on_the_die_roll(self):
             pegs: Dict[Color, List[Peg]] = {}
             for c in Color:
                 pegs[c] = [Peg(c) for _ in range(4)]
 
             board = Board()
-            board.add_pegs([peg for color_pegs in pegs.values() for peg in color_pegs])
+            for peg in [peg for color_pegs in pegs.values() for peg in color_pegs]:
+                board.add_peg(peg)
 
             on_deck_red_peg = pegs[Color.RED][0]
             game = Game(board, MockActionSelector([MoveToBoardAction(on_deck_red_peg, board)]))
@@ -71,4 +67,4 @@ class TestGame:
             
             pegs_on_board = board.get_pegs_on_board(Color.RED)
             assert len(pegs_on_board) == 1
-            assert pegs_on_board[0].position == 0
+            assert board.get_track_position_for_peg(pegs_on_board[0]) == 0

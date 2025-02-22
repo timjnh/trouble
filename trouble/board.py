@@ -1,5 +1,7 @@
 from typing import List, Dict
 
+from uuid import UUID
+
 from .peg import Peg
 from .color import Color
 
@@ -9,50 +11,93 @@ class Board:
 
     def __init__(self):
         self.pegs_by_color: Dict[Color, List[Peg]] = {}
+        self.pegs_by_color_and_track_position: Dict[Color, Dict[int, Peg]] = { color: {} for color in Color }
+        self.track_position_by_peg: Dict[UUID, int] = {}
+        self.pegs_by_board_position: Dict[int, Peg] = {}
+        self.board_position_by_peg: Dict[UUID, int] = {}
 
     def reset(self):
-        for c in Color:
-            if self.pegs_by_color.get(c) is not None:
-                for p in self.pegs_by_color[c]:
-                    p.reset()
+        self.pegs_by_board_position = {}
+        self.board_position_by_peg = {}
+        self.pegs_by_color_and_track_position = { color: {} for color in Color }
+        self.track_position_by_peg = {}
 
-    def add_pegs(self, pegs: List[Peg]):
-        for p in pegs:
-            assert p.position is None or p.position < self.FULL_TRACK_LENGTH
+    def add_peg(self, peg: Peg):
+        assert peg.id not in [p.id for p in self.pegs]
 
-            board_position = self.get_board_peg_position(p)
-            if board_position is not None:
-                assert not self.get_peg_at_board_position(board_position)
+        if peg.color not in self.pegs_by_color:
+            self.pegs_by_color[peg.color] = []
+        self.pegs_by_color[peg.color].append(peg)
 
-            if p.color not in self.pegs_by_color:
-                self.pegs_by_color[p.color] = []
-            self.pegs_by_color[p.color].append(p)
+    def add_peg_at_track_position(self, peg: Peg, track_position: int):
+        self.add_peg(peg)
+        self.set_peg_track_position(peg, track_position)
+
+    def set_peg_track_position(self, peg: Peg, track_position: int):
+        assert track_position >= 0 and track_position < self.FULL_TRACK_LENGTH
+        assert self.pegs_by_color_and_track_position[peg.color].get(track_position) is None
+
+        board_position = self.track_position_to_board_position(track_position, peg.color)
+        assert board_position not in self.pegs_by_board_position
+
+        # remove peg from old position
+        old_board_position = self.board_position_by_peg.get(peg.id)
+        if old_board_position is not None:
+            old_track_position = self.board_position_to_track_position(old_board_position, peg.color)
+            del self.pegs_by_board_position[old_board_position]
+            del self.pegs_by_color_and_track_position[peg.color][old_track_position]
+            del self.track_position_by_peg[peg.id]
+
+        if board_position is not None:
+            self.pegs_by_board_position[board_position] = peg
+            self.board_position_by_peg[peg.id] = board_position
+        self.pegs_by_color_and_track_position[peg.color][track_position] = peg
+        self.track_position_by_peg[peg.id] = track_position
+
+    def set_peg_on_deck(self, peg: Peg):
+        board_position = self.board_position_by_peg.get(peg.id)
+        if board_position is not None:
+            del self.board_position_by_peg[peg.id]
+            del self.pegs_by_board_position[board_position]
+        track_position = self.track_position_by_peg.get(peg.id)
+        if track_position is not None:
+            del self.pegs_by_color_and_track_position[peg.color][track_position]
+            del self.track_position_by_peg[peg.id]
 
     @property
     def pegs(self) -> List[Peg]:
         return [peg for peg_list in self.pegs_by_color.values() for peg in peg_list]
 
     def get_pegs_on_board(self, color: Color) -> List[Peg]:
-        return [p for p in self.pegs_by_color[color] if p.is_on_board and p.position is not None and p.position < self.INTERIOR_TRACK_LENGTH]
+        pegs_by_track_position = self.pegs_by_color_and_track_position[color]
+        return [peg for position, peg in pegs_by_track_position.items() if position < self.INTERIOR_TRACK_LENGTH]
 
     def get_pegs_on_deck(self, color: Color) -> List[Peg]:
-        return [p for p in self.pegs_by_color[color] if p.is_on_deck]
+        return [peg for peg in self.pegs_by_color[color] if self.is_peg_on_deck(peg) == True]
     
+    def is_peg_on_deck(self, peg: Peg) -> bool:
+        track_position = self.track_position_by_peg.get(peg.id)
+        return track_position is None
+
     def get_pegs_in_final_slots(self, color: Color) -> List[Peg]:
-        if self.pegs_by_color.get(color) is None:
-            return []
-        return [p for p in self.pegs_by_color[color] if p.position is not None and p.position >= self.FULL_TRACK_LENGTH - 4]
+        pegs_by_track_position = self.pegs_by_color_and_track_position[color].values()
+        return [peg for peg in pegs_by_track_position if self.is_peg_in_final_slots(peg) == True]
+    
+    def is_peg_in_final_slots(self, peg: Peg) -> bool:
+        track_position = self.track_position_by_peg.get(peg.id)
+        if track_position is None:
+            return False
+        return track_position >= self.INTERIOR_TRACK_LENGTH
     
     def get_board_peg_position(self, peg: Peg) -> int | None:
-        if peg.position is None:
+        track_position = self.track_position_by_peg.get(peg.id)
+        if track_position is None or track_position >= self.INTERIOR_TRACK_LENGTH:
             return None
-
-        if peg.position >= self.FULL_TRACK_LENGTH - 4:
-            return None
-        
-        return self.track_position_to_board_position(peg.position, peg.color)
+        return self.track_position_to_board_position(track_position, peg.color)
     
-    def track_position_to_board_position(self, track_position: int, color: Color) -> int:
+    def track_position_to_board_position(self, track_position: int, color: Color) -> int | None:
+        if track_position >= self.INTERIOR_TRACK_LENGTH:
+            return None
         color_offset = int(self.INTERIOR_TRACK_LENGTH / 4)
         return (track_position + Color.ordinal(color) * color_offset) % Board.INTERIOR_TRACK_LENGTH
     
@@ -65,7 +110,7 @@ class Board:
             return board_position + (Board.INTERIOR_TRACK_LENGTH - board_start_position)
         
     def get_peg_at_board_position(self, board_position: int) -> Peg | None:
-        for peg in self.pegs:
-            if self.get_board_peg_position(peg) == board_position:
-                return peg
-        return None
+        return self.pegs_by_board_position.get(board_position)
+    
+    def get_track_position_for_peg(self, peg: Peg) -> int | None:
+        return self.track_position_by_peg.get(peg.id)
