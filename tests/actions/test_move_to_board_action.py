@@ -21,6 +21,7 @@ class TestMoveToBoardAction:
             board.add_peg(red_peg)
 
             red_board_start_position = board.track_position_to_board_position(0, Color.RED)
+            assert red_board_start_position is not None
             green_track_position = board.board_position_to_track_position(red_board_start_position, Color.GREEN)
             board.add_peg_at_track_position(green_peg, green_track_position)
 
