@@ -34,8 +34,28 @@ class TestRandomActionSelector:
             assert isinstance(action, NoneAction) == True
 
         def test_should_not_return_move_to_board_if_there_are_no_on_deck_pegs(self):
-            pass
+            die = MockDie(rolls=[6])
+
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+
+            action_selector = RandomActionSelector(die)
+            action = action_selector.select_action(Color.RED, board)
+
+            assert isinstance(action, NoneAction) == True
 
         def test_should_default_to_a_none_action(self):
-            pass
+            die = MockDie(rolls=[1])
+
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+
+            action_selector = RandomActionSelector(die)
+            action = action_selector.select_action(Color.RED, board)
+
+            assert isinstance(action, NoneAction) == True
 
