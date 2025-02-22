@@ -35,4 +35,17 @@ class MoveAction(Action):
         return applicable_pegs
 
     def apply(self, peg: Peg):
-        pass
+        current_track_position = self.board.get_track_position_for_peg(peg)
+        assert current_track_position is not None
+
+        new_track_position = current_track_position + self.die_roll
+
+        # bump any peg in the way to on deck
+        new_board_position = self.board.track_position_to_board_position(new_track_position, self.color)
+        if new_board_position is not None:
+            other_peg = self.board.get_peg_at_board_position(new_board_position)
+            if other_peg is not None:
+                self.board.set_peg_on_deck(other_peg)
+
+        # move peg
+        self.board.set_peg_track_position(peg, new_track_position)

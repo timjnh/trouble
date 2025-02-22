@@ -77,3 +77,32 @@ class TestMoveAction:
             action = MoveAction(1, Color.RED, board)
             assert action.get_applicable_pegs() == [peg]
             
+    class TestApply:
+        def test_should_move_peg_to_new_track_position(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+
+            action = MoveAction(1, Color.RED, board)
+            action.apply(peg)
+
+            assert board.get_track_position_for_peg(peg) == 1
+
+        def test_should_bump_any_peg_in_the_way_to_on_deck(self):
+            red_peg = Peg(Color.RED)
+            green_peg = Peg(Color.GREEN)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 0)
+
+            red_start_board_position = board.track_position_to_board_position(0, Color.RED)
+            assert red_start_board_position is not None
+            green_track_position = board.board_position_to_track_position(red_start_board_position, Color.GREEN) + 1
+            board.add_peg_at_track_position(green_peg, green_track_position)
+
+            action = MoveAction(1, Color.RED, board)
+            action.apply(red_peg)
+
+            assert board.is_peg_on_deck(green_peg) == True
+            assert board.get_track_position_for_peg(red_peg) == 1
