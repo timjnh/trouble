@@ -64,6 +64,7 @@ class TestGame:
             game.take_turn()
 
             assert game.current_color == Color.GREEN
+            assert game.current_color_turns == 1
             assert board.get_track_position_for_peg(red_peg) == 1
 
         def test_should_not_advance_the_current_color_if_a_6_is_rolled(self):
