@@ -57,8 +57,7 @@ class TestGame:
             for peg in [peg for color_pegs in pegs.values() for peg in color_pegs]:
                 board.add_peg(peg)
 
-            on_deck_red_peg = pegs[Color.RED][0]
-            game = Game(board, MockActionSelector([MoveToBoardAction(on_deck_red_peg, board)]))
+            game = Game(board, MockActionSelector([MoveToBoardAction(6, Color.RED, board)]))
 
             game.take_turn()
 
