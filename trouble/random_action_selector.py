@@ -1,13 +1,13 @@
 from random import random
 from typing import List
 
-from .action_selector import ActionSelector
+from .action_selector import ActionSelector, SelectedAction
 from .board import Board
-from .color import Color
+from .color import Color 
 from .actions import Action, MoveToBoardAction, MoveAction, NoneAction
 
 class RandomActionSelector(ActionSelector):
-    def select_action(self, color: Color, board: Board) -> Action:
+    def select_action(self, color: Color, board: Board) -> SelectedAction:
         die_roll = self.die.roll()
 
         # TODO: two turns if we roll a 6
@@ -20,7 +20,9 @@ class RandomActionSelector(ActionSelector):
         possible_actions.sort(key=lambda x: random())
 
         for action in possible_actions:
-            if action.is_applicable():
-                return action
+            pegs = action.get_applicable_pegs()
+            if len(pegs) > 0:
+                pegs.sort(key=lambda x: random())
+                return SelectedAction(action, pegs[0])
 
-        return NoneAction()
+        return SelectedAction(NoneAction(), None)

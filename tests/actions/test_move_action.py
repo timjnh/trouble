@@ -1,36 +1,37 @@
 from trouble import Color, Peg, MoveAction, Board
 
 class TestMoveAction:
-    class TestIsApplicable:
-        def test_should_return_true_if_there_is_a_peg_with_nothing_blocking_it(self):
-            peg = Peg(Color.RED)
+    class TestGetApplicablePegs:
+        def test_should_return_pegs_with_nothing_blocking_them(self):
+            peg_1 = Peg(Color.RED)
+            peg_2 = Peg(Color.RED)
 
             board = Board()
-            board.add_peg_at_track_position(peg, 0)
+            board.add_peg_at_track_position(peg_1, 0)
+            board.add_peg_at_track_position(peg_2, 2)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == True
+            assert set(action.get_applicable_pegs()) == set([peg_1, peg_2])
 
-        def test_should_return_false_if_there_are_no_pegs_on_the_board(self):
+        def test_should_an_empty_list_if_there_are_no_pegs_on_the_board(self):
             peg = Peg(Color.RED)
 
             board = Board()
             board.add_peg(peg)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == False
+            assert action.get_applicable_pegs() == []
 
-        def test_should_return_false_if_moving_would_take_the_peg_off_their_track(self):
+        def test_should_not_return_pegs_that_would_move_off_the_track(self):
             peg = Peg(Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 1)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == False
+            assert action.get_applicable_pegs() == []
 
-        # TODO: i think we should establish the peg here.  maybe get_applicable_peg
-        def test_should_return_false_if_we_would_land_on_our_own_peg(self):
+        def test_should_not_return_pegs_that_would_land_on_our_own_pegs(self):
             peg1 = Peg(Color.RED)
             peg2 = Peg(Color.RED)
 
@@ -39,9 +40,9 @@ class TestMoveAction:
             board.add_peg_at_track_position(peg2, Board.FULL_TRACK_LENGTH - 6)
 
             action = MoveAction(3, Color.RED, board)
-            assert action.is_applicable() == False
+            assert action.get_applicable_pegs() == []
 
-        def test_should_return_true_if_we_would_land_on_someone_elses_peg(self):
+        def test_should_return_pegs_that_would_land_on_another_color_peg(self):
             red_peg = Peg(Color.RED)
             green_peg = Peg(Color.GREEN)
 
@@ -54,9 +55,9 @@ class TestMoveAction:
             board.add_peg_at_track_position(green_peg, green_track_position)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == True
+            assert action.get_applicable_pegs() == [red_peg]
 
-        def test_should_return_true_if_at_least_one_of_our_pegs_can_move(self):
+        def test_should_only_return_unblocked_pegs(self):
             peg1 = Peg(Color.RED)
             peg2 = Peg(Color.RED)
 
@@ -65,14 +66,14 @@ class TestMoveAction:
             board.add_peg_at_track_position(peg2, 1)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == True
+            assert action.get_applicable_pegs() == [peg2]
 
-        def test_should_return_true_even_if_we_are_in_final_slots(self):
+        def test_should_allow_pegs_in_final_slots_to_move(self):
             peg = Peg(Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 2)
 
             action = MoveAction(1, Color.RED, board)
-            assert action.is_applicable() == True
+            assert action.get_applicable_pegs() == [peg]
             
