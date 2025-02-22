@@ -1,9 +1,9 @@
-from trouble import Board, Color, DefaultActionSelector, Peg
+from trouble import Board, Color, RandomActionSelector, Peg
 from trouble.actions import MoveToBoardAction, NoneAction
 
 from mock_die import MockDie
 
-class TestDefaultActionSelector:
+class TestRandomActionSelector:
     class TestSelectAction:
         def test_should_return_move_to_board_if_a_6_is_rolled(self):
             die = MockDie(rolls=[6])
@@ -13,7 +13,7 @@ class TestDefaultActionSelector:
             board = Board()
             board.add_peg(peg)
 
-            action_selector = DefaultActionSelector(die)
+            action_selector = RandomActionSelector(die)
             action = action_selector.select_action(Color.RED, board)
 
             assert isinstance(action, MoveToBoardAction) == True
@@ -28,7 +28,7 @@ class TestDefaultActionSelector:
             board.add_peg_at_track_position(peg_1, 0)
             board.add_peg(peg_2)
 
-            action_selector = DefaultActionSelector(die)
+            action_selector = RandomActionSelector(die)
             action = action_selector.select_action(Color.RED, board)
 
             assert isinstance(action, NoneAction) == True
