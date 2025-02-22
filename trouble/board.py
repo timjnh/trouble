@@ -16,6 +16,20 @@ class Board:
         self.pegs_by_board_position: Dict[int, Peg] = {}
         self.board_position_by_peg: Dict[UUID, int] = {}
 
+    def __str__(self) -> str:
+        result = "\033[97mOn Deck: "
+        for color in Color:
+            for peg in self.get_pegs_on_deck(color):
+                result += f"{peg.color}"
+        result += "\n"
+        for i in range(self.INTERIOR_TRACK_LENGTH):
+            peg = self.get_peg_at_board_position(i)
+            if peg is not None:
+                result += f"{peg.color}"
+            else:
+                result += "\033[97mO"
+        return result
+
     def reset(self):
         self.pegs_by_board_position = {}
         self.board_position_by_peg = {}

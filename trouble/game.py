@@ -43,3 +43,4 @@ class Game:
         self.current_color_turns -= 1
         if self.current_color_turns == 0:
             self.current_color = Color.next(self.current_color)
+            self.current_color_turns = 1
