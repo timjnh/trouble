@@ -8,6 +8,7 @@ class Game:
         self.board = board
         self.action_selector = action_selector
         self.current_color = Color.RED
+        self.current_color_turns = 1
         self.die = die
 
     def reset(self):
@@ -31,5 +32,14 @@ class Game:
         selected_action = self.action_selector.select_action(self.current_color, self.board, die_roll)
         selected_action.apply()
 
-        if die_roll != 6:
+        if selected_action.peg is not None:
+            board_position = self.board.get_board_position_for_peg(selected_action.peg)
+            if board_position is not None and board_position % 7 == 3:
+                self.current_color_turns += 1
+
+        if die_roll == 6:
+            self.current_color_turns += 1
+
+        self.current_color_turns -= 1
+        if self.current_color_turns == 0:
             self.current_color = Color.next(self.current_color)

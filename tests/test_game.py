@@ -84,3 +84,60 @@ class TestGame:
 
             assert game.current_color == Color.RED
             assert board.get_track_position_for_peg(red_peg) == 0
+
+        def test_should_not_advance_the_current_color_if_the_peg_lands_on_a_double_turn_location(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 0)
+
+            actions = [
+                SelectedAction(
+                    MoveAction(3, Color.RED, board),
+                    red_peg
+                )
+            ]
+            game = Game(board, MockActionSelector(actions), MockDie([3]))
+
+            game.take_turn()
+
+            assert game.current_color == Color.RED
+            assert board.get_track_position_for_peg(red_peg) == 3
+
+        def test_should_give_two_extra_turns_for_a_6_and_a_double_turn_location(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 4)
+
+            actions = [
+                SelectedAction(
+                    MoveAction(6, Color.RED, board),
+                    red_peg
+                ),
+                SelectedAction(
+                    MoveAction(1, Color.RED, board),
+                    red_peg
+                ),
+                SelectedAction(
+                    MoveAction(1, Color.RED, board),
+                    red_peg
+                )
+            ]
+            game = Game(board, MockActionSelector(actions), MockDie([6, 1, 1]))
+
+            game.take_turn()
+
+            assert game.current_color == Color.RED
+            assert board.get_track_position_for_peg(red_peg) == 10
+
+            game.take_turn()
+
+            assert game.current_color == Color.RED
+            assert board.get_track_position_for_peg(red_peg) == 11
+
+            game.take_turn()
+
+            assert game.current_color == Color.GREEN
+            assert board.get_track_position_for_peg(red_peg) == 12
+
