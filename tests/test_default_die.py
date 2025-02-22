@@ -1,7 +1,7 @@
-from trouble.die import Die
+from trouble.default_die import DefaultDie
 
-class TestDie:
-    class Roll:
+class TestDefaultDie:
+    class TestRoll:
         def test_should_produce_a_random_number_between_1_and_the_number_of_sides(self):
-            die = Die()
+            die = DefaultDie()
             assert 1 <= die.roll() <= 6

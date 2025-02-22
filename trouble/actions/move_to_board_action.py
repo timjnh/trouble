@@ -11,6 +11,7 @@ class MoveToBoardAction(Action):
 
         # bounce any pegs at our start position to on deck
         board_peg_position = self.board.track_position_to_board_position(0, self.peg.color)
+        assert board_peg_position is not None
         other_peg = self.board.get_peg_at_board_position(board_peg_position)
         if other_peg is not None:
             self.board.set_peg_on_deck(other_peg)
