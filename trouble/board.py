@@ -67,6 +67,9 @@ class Board:
     @property
     def pegs(self) -> List[Peg]:
         return [peg for peg_list in self.pegs_by_color.values() for peg in peg_list]
+    
+    def get_pegs_by_color(self, color: Color) -> List[Peg]:
+        return self.pegs_by_color.get(color, [])
 
     def get_pegs_on_board(self, color: Color) -> List[Peg]:
         pegs_by_track_position = self.pegs_by_color_and_track_position[color]
@@ -89,7 +92,16 @@ class Board:
             return False
         return track_position >= self.INTERIOR_TRACK_LENGTH
     
-    def get_board_peg_position(self, peg: Peg) -> int | None:
+    def get_peg_at_board_position(self, board_position: int) -> Peg | None:
+        return self.pegs_by_board_position.get(board_position)
+    
+    def get_peg_at_track_position(self, track_position: int, color: Color) -> Peg | None:
+        return self.pegs_by_color_and_track_position[color].get(track_position)
+    
+    def get_track_position_for_peg(self, peg: Peg) -> int | None:
+        return self.track_position_by_peg.get(peg.id)
+
+    def get_board_position_for_peg(self, peg: Peg) -> int | None:
         track_position = self.track_position_by_peg.get(peg.id)
         if track_position is None or track_position >= self.INTERIOR_TRACK_LENGTH:
             return None
@@ -108,9 +120,3 @@ class Board:
             return board_position - board_start_position
         else:
             return board_position + (Board.INTERIOR_TRACK_LENGTH - board_start_position)
-        
-    def get_peg_at_board_position(self, board_position: int) -> Peg | None:
-        return self.pegs_by_board_position.get(board_position)
-    
-    def get_track_position_for_peg(self, peg: Peg) -> int | None:
-        return self.track_position_by_peg.get(peg.id)
