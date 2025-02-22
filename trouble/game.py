@@ -1,12 +1,14 @@
 from .board import Board
 from .color import Color
 from .action_selector import ActionSelector
+from .die import Die
 
 class Game:
-    def __init__(self, board: Board, action_selector: ActionSelector):
+    def __init__(self, board: Board, action_selector: ActionSelector, die: Die):
         self.board = board
         self.action_selector = action_selector
         self.current_color = Color.RED
+        self.die = die
 
     def reset(self):
         self.board.reset()
@@ -24,7 +26,9 @@ class Game:
         return self.winner is not None
     
     def take_turn(self):
-        selected_action = self.action_selector.select_action(self.current_color, self.board)
+        die_roll = self.die.roll()
+
+        selected_action = self.action_selector.select_action(self.current_color, self.board, die_roll)
         selected_action.apply()
 
         self.current_color = Color.next(self.current_color)
