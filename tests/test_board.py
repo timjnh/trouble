@@ -4,15 +4,13 @@ class TestBoard:
     class TestReset:
         def test_moves_all_pegs_to_on_deck(self):
             red_peg = Peg(Color.RED)
-            red_peg.position = 0
-
             green_peg_1 = Peg(Color.GREEN)
-            green_peg_1.position = 3
-
             green_peg_2 = Peg(Color.GREEN)
 
             board = Board()
-            board.add_pegs([red_peg, green_peg_1, green_peg_2])
+            board.add_peg_at_track_position(red_peg, 0)
+            board.add_peg_at_track_position(green_peg_1, 3)
+            board.add_peg(green_peg_2)
 
             assert len(board.pegs) == 3
             assert len(board.get_pegs_on_deck(Color.GREEN)) == 1
@@ -24,61 +22,163 @@ class TestBoard:
             assert len(board.get_pegs_on_deck(Color.GREEN)) == 2
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
 
-    class TestAddPegs:
+    class TestAddPeg:
         def test_adds_pegs_to_board(self):
             red_peg = Peg(Color.RED)
             green_peg = Peg(Color.GREEN)
 
             board = Board()
-            board.add_pegs([red_peg, green_peg])
+            board.add_peg(red_peg)
+            board.add_peg(green_peg)
 
             assert len(board.pegs) == 2
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
             assert len(board.get_pegs_on_deck(Color.GREEN)) == 1
 
+    class TestAddPegAtTrackPosition:
+        def test_adds_pegs_to_board_at_track_position(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 1)
+
+            assert len(board.pegs) == 1
+            assert len(board.get_pegs_on_deck(Color.RED)) == 0
+            assert board.get_track_position_for_peg(red_peg) == 1
+
+    class TestSetPegTrackPosition:
+        def test_sets_the_position_of_an_on_deck_peg(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg(red_peg)
+            assert board.is_peg_on_deck(red_peg) is True
+
+            board.set_peg_track_position(red_peg, 1)
+            new_board_position = board.track_position_to_board_position(1, Color.RED)
+            assert new_board_position is not None and board.get_peg_at_board_position(new_board_position) == red_peg
+            assert board.is_peg_on_deck(red_peg) is False
+        
+        def test_sets_the_position_of_a_peg_on_the_board(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 1)
+            assert board.is_peg_on_deck(red_peg) is False
+
+            board.set_peg_track_position(red_peg, 2)
+            old_board_position = board.track_position_to_board_position(1, Color.RED)
+            new_board_position = board.track_position_to_board_position(2, Color.RED)
+            
+            assert new_board_position is not None and board.get_peg_at_board_position(new_board_position) == red_peg
+            assert old_board_position is not None and board.get_peg_at_board_position(old_board_position) is None
+            assert board.is_peg_on_deck(red_peg) is False
+
+        def test_can_move_pegs_into_final_slots(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 1)
+            assert board.is_peg_on_deck(red_peg) is False
+
+            final_slot_position = Board.FULL_TRACK_LENGTH - 1
+            board.set_peg_track_position(red_peg, final_slot_position)
+
+            old_board_position = board.track_position_to_board_position(1, Color.RED)
+            assert old_board_position is not None and board.get_peg_at_board_position(old_board_position) is None
+
+            assert board.is_peg_on_deck(red_peg) is False
+            assert board.is_peg_in_final_slots(red_peg) is True
+
+    class TestSetPegOnDeck:
+        def test_moves_peg_from_on_board_to_deck(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+            assert board.is_peg_on_deck(peg) is False
+
+            board.set_peg_on_deck(peg)
+
+            assert len(board.pegs) == 1
+            assert len(board.get_pegs_on_deck(Color.RED)) == 1
+            assert board.get_board_peg_position(peg) is None
+            assert board.is_peg_on_deck(peg) is True
+
+        def test_moves_peg_from_final_slot_to_on_deck(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 1)
+            assert board.is_peg_in_final_slots(peg) is True
+
+            board.set_peg_on_deck(peg)
+
+            assert len(board.pegs) == 1
+            assert len(board.get_pegs_on_deck(Color.RED)) == 1
+            assert board.is_peg_in_final_slots(peg) is False
+
+    class TestIsPegOnDeck:
+        def test_returns_true_if_peg_is_on_deck(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg(peg)
+
+            assert board.is_peg_on_deck(peg) is True
+
+        def test_returns_false_if_peg_is_on_board(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+
+            assert board.is_peg_on_deck(peg) is False
+
+        def test_returns_false_if_peg_is_in_final_slots(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 1)
+
+            assert board.is_peg_on_deck(peg) is False
+
     class TestGetPegsOnBoard:
         def test_returns_all_pegs_on_board(self):
             red_peg_on_board = Peg(Color.RED)
-            red_peg_on_board.position = 0
-
             red_peg_on_deck = Peg(Color.RED)
-
             red_peg_in_final_slot = Peg(Color.RED)
-            red_peg_in_final_slot.position = Board.FULL_TRACK_LENGTH - 1
 
             board = Board()
-            board.add_pegs([red_peg_on_board, red_peg_on_deck, red_peg_in_final_slot])
+            board.add_peg_at_track_position(red_peg_on_board, 0)
+            board.add_peg(red_peg_on_deck)
+            board.add_peg_at_track_position(red_peg_in_final_slot, Board.FULL_TRACK_LENGTH - 1)
 
             assert len(board.get_pegs_on_board(Color.RED)) == 1
 
     class TestGetPegsOnDeck:
         def test_returns_all_pegs_on_deck(self):
             red_peg_on_deck = Peg(Color.RED)
-
             red_peg_on_board = Peg(Color.RED)
-            red_peg_on_board.position = 0
-
             red_peg_in_final_slot = Peg(Color.RED)
-            red_peg_in_final_slot.position = Board.FULL_TRACK_LENGTH - 1
 
             board = Board()
-            board.add_pegs([red_peg_on_board, red_peg_on_deck, red_peg_in_final_slot])
+            board.add_peg(red_peg_on_deck)
+            board.add_peg_at_track_position(red_peg_on_board, 0)
+            board.add_peg_at_track_position(red_peg_in_final_slot, Board.FULL_TRACK_LENGTH - 1)
 
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
 
     class TestGetPegsInFinalSlots:
         def test_returns_pegs_in_final_slots_matching_given_color(self):
             red_peg_1 = Peg(Color.RED)
-            red_peg_1.position = 0
-
             red_peg_2 = Peg(Color.RED)
-            red_peg_2.position = Board.FULL_TRACK_LENGTH - 1
-
             green_peg = Peg(Color.GREEN)
-            green_peg.position = Board.FULL_TRACK_LENGTH - 1
 
             board = Board()
-            board.add_pegs([red_peg_1, red_peg_2, green_peg])
+            board.add_peg_at_track_position(red_peg_1, 0)
+            board.add_peg_at_track_position(red_peg_2, Board.FULL_TRACK_LENGTH - 1)
+            board.add_peg_at_track_position(green_peg, Board.FULL_TRACK_LENGTH - 1)
 
             assert len(board.get_pegs_in_final_slots(Color.RED)) == 1
             assert len(board.get_pegs_in_final_slots(Color.GREEN)) == 1
@@ -90,50 +190,65 @@ class TestBoard:
 
         def test_returns_an_empty_list_with_no_pegs_of_given_color_in_final_slots(self):
             red_peg = Peg(Color.RED)
-            red_peg.position = 0
 
             board = Board()
-            board.add_pegs([red_peg])
+            board.add_peg_at_track_position(red_peg, 0)
 
             assert len(board.get_pegs_in_final_slots(Color.RED)) == 0
 
         def test_returns_an_empty_list_with_all_pegs_of_given_color_on_deck(self):
             board = Board()
-            board.add_pegs([Peg(Color.RED)])
+            board.add_peg(Peg(Color.RED))
 
             assert len(board.get_pegs_in_final_slots(Color.RED)) == 0
+
+    class TestIsPegInFinalSlots:
+        def test_on_deck_pegs_are_not_in_final_slots(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg(peg)
+
+            assert board.is_peg_in_final_slots(peg) is False
+
+        def test_pegs_on_board_are_not_in_final_slots(self):
+            peg = Peg(Color.RED)
+            board = Board()
+            board.add_peg_at_track_position(peg, 0)
+            assert board.is_peg_in_final_slots(peg) is False
+    
+        def test_pegs_in_final_slots_are_in_final_slots(self):
+            peg = Peg(Color.RED)
+            board = Board()
+            board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 1)
+            assert board.is_peg_in_final_slots(peg) is True
 
     class TestGetBoardPegPosition:
         def test_returns_none_if_peg_is_on_deck(self):
             peg = Peg(Color.RED)
-            assert peg.is_on_deck == True
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg(peg)
 
             assert board.get_board_peg_position(peg) is None
 
         def test_returns_none_if_the_peg_is_in_final_slots(self):
             peg = Peg(Color.RED)
-            peg.position = Board.FULL_TRACK_LENGTH - 1
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - 1)
 
             assert board.get_board_peg_position(peg) is None
 
         def test_returns_the_peg_position_plus_the_color_offset(self):
             red_peg = Peg(Color.RED)
-            red_peg.position = 0
-
             green_peg_1 = Peg(Color.GREEN)
-            green_peg_1.position = 0
-
             green_peg_2 = Peg(Color.GREEN)
-            green_peg_2.position = 3
 
             board = Board()
-            board.add_pegs([red_peg, green_peg_1, green_peg_2])
+            board.add_peg_at_track_position(red_peg, 0)
+            board.add_peg_at_track_position(green_peg_1, 0)
+            board.add_peg_at_track_position(green_peg_2, 3)
 
             # red offset is 0
             assert board.get_board_peg_position(red_peg) == 0
@@ -144,10 +259,9 @@ class TestBoard:
 
         def test_loops_at_around_at_end_of_track(self):
             peg = Peg(Color.BLUE)
-            peg.position = 7
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg_at_track_position(peg, 7)
 
             assert board.get_board_peg_position(peg) == 0
 
@@ -182,18 +296,33 @@ class TestBoard:
     class TestGetPegAtBoardPosition:
         def test_returns_none_if_no_peg_at_board_position(self):
             peg = Peg(Color.RED)
-            peg.position = 0
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg_at_track_position(peg, 0)
 
             assert board.get_peg_at_board_position(1) is None
 
         def test_returns_the_peg_at_the_board_position(self):
             peg = Peg(Color.GREEN)
-            peg.position = 0
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg_at_track_position(peg, 0)
 
             assert board.get_peg_at_board_position(7) == peg
+
+    class TestGetTrackPositionForPeg:
+        def test_returns_none_if_peg_is_on_deck(self):
+            peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg(peg)
+
+            assert board.get_track_position_for_peg(peg) is None
+
+        def test_returns_the_track_position_for_the_given_peg(self):
+            peg = Peg(Color.GREEN)
+
+            board = Board()
+            board.add_peg_at_track_position(peg, 1)
+
+            assert board.get_track_position_for_peg(peg) == 1

@@ -11,7 +11,7 @@ class TestDefaultActionSelector:
             peg = Peg(Color.RED)
 
             board = Board()
-            board.add_pegs([peg])
+            board.add_peg(peg)
 
             action_selector = DefaultActionSelector(die)
             action = action_selector.select_action(Color.RED, board)
@@ -22,12 +22,11 @@ class TestDefaultActionSelector:
             die = MockDie(rolls=[6])
 
             peg_1 = Peg(Color.RED)
-            peg_1.position = 0
-
             peg_2 = Peg(Color.RED)
 
             board = Board()
-            board.add_pegs([peg_1, peg_2])
+            board.add_peg_at_track_position(peg_1, 0)
+            board.add_peg(peg_2)
 
             action_selector = DefaultActionSelector(die)
             action = action_selector.select_action(Color.RED, board)
