@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
+from typing import List
+
+from .. import Peg
 
 class Action(ABC):
     @abstractmethod
-    def is_applicable(self) -> bool:
+    def get_applicable_pegs(self) -> List[Peg]:
         pass
 
     @abstractmethod
-    def apply(self):
+    def apply(self, peg: Peg):
         pass

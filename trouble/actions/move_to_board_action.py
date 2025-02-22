@@ -1,5 +1,7 @@
+from typing import List
+
 from .action import Action
-from .. import Color, Board
+from .. import Color, Board, Peg
 
 class MoveToBoardAction(Action):
     def __init__(self, die_roll: int, color: Color, board: Board):
@@ -7,25 +9,23 @@ class MoveToBoardAction(Action):
         self.color = color
         self.board = board
 
-    def is_applicable(self) -> bool:
+    def get_applicable_pegs(self) -> List[Peg]:
         if self.die_roll != 6:
-            return False
+            return []
         
         board_start_position = self.board.track_position_to_board_position(0, self.color)
         assert board_start_position is not None
         peg_at_starting_position = self.board.get_peg_at_board_position(board_start_position)
 
         if peg_at_starting_position is not None and peg_at_starting_position.color == self.color:
-            return False
+            return []
 
         on_deck_pegs = self.board.get_pegs_on_deck(self.color)
         if len(on_deck_pegs) == 0:
-            return False
-        return True
+            return []
+        return on_deck_pegs
 
-    def apply(self):
-        peg = self.board.get_pegs_on_deck(self.color)[0]
-
+    def apply(self, peg: Peg):
         # bounce any pegs at our start position to on deck
         board_peg_position = self.board.track_position_to_board_position(0, peg.color)
         assert board_peg_position is not None

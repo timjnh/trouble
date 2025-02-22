@@ -1,8 +1,11 @@
+from typing import List
+
+from .. import Peg
 from .action import Action
 
 class NoneAction(Action):
-    def is_applicable(self) -> bool:
-        return True
+    def get_applicable_pegs(self) -> List[Peg]:
+        return []
 
-    def apply(self):
+    def apply(self, peg: Peg):
         pass

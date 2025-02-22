@@ -1,14 +1,29 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 from .color import Color
 from .board import Board
 from .die import Die
 from .actions import Action
+from .peg import Peg
+
+@dataclass
+class SelectedAction:
+    action: Action
+    peg: Peg | None
+
+    def __init__(self, action: Action, peg: Peg | None):
+        self.action = action
+        self.peg = peg
+
+    def apply(self):
+        if self.peg is not None:
+            self.action.apply(self.peg)
 
 class ActionSelector(ABC):
     def __init__(self, die: Die):
         self.die = die
 
     @abstractmethod
-    def select_action(self, color: Color, board: Board) -> Action:
+    def select_action(self, color: Color, board: Board) -> SelectedAction:
         pass

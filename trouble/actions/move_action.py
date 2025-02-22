@@ -1,5 +1,7 @@
+from typing import List
+
 from .action import Action
-from .. import Color, Board
+from .. import Color, Peg, Board
 
 class MoveAction(Action):
     def __init__(self, die_roll: int, color: Color, board: Board):
@@ -7,7 +9,9 @@ class MoveAction(Action):
         self.color = color
         self.board = board
 
-    def is_applicable(self) -> bool:
+    def get_applicable_pegs(self) -> List[Peg]:
+        applicable_pegs: List[Peg] = []
+
         pegs = self.board.get_pegs_by_color(self.color)
         for peg in pegs:
             # skip if peg is on deck
@@ -27,8 +31,8 @@ class MoveAction(Action):
             if other_peg is not None:
                 continue
 
-            return True
-        return False
+            applicable_pegs.append(peg)
+        return applicable_pegs
 
-    def apply(self):
+    def apply(self, peg: Peg):
         pass

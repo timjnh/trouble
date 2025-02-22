@@ -24,7 +24,7 @@ class Game:
         return self.winner is not None
     
     def take_turn(self):
-        action = self.action_selector.select_action(self.current_color, self.board)
-        action.apply()
+        selected_action = self.action_selector.select_action(self.current_color, self.board)
+        selected_action.apply()
 
         self.current_color = Color.next(self.current_color)

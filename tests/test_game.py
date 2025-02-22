@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction
+from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction
 from mock_action_selector import MockActionSelector
 
 class TestGame:
@@ -57,7 +57,13 @@ class TestGame:
             for peg in [peg for color_pegs in pegs.values() for peg in color_pegs]:
                 board.add_peg(peg)
 
-            game = Game(board, MockActionSelector([MoveToBoardAction(6, Color.RED, board)]))
+            actions = [
+                SelectedAction(
+                    MoveToBoardAction(6, Color.RED, board),
+                    pegs[Color.RED][0]
+                )
+            ]
+            game = Game(board, MockActionSelector(actions))
 
             game.take_turn()
 
