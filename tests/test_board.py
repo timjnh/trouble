@@ -80,15 +80,30 @@ class TestBoard:
             board = Board()
             board.add_peg_at_track_position(red_peg, 1)
             assert board.is_peg_on_deck(red_peg) is False
+            assert board.board_position_by_peg[red_peg.id] is not None
 
             final_slot_position = Board.FULL_TRACK_LENGTH - 1
             board.set_peg_track_position(red_peg, final_slot_position)
 
+            assert board.board_position_by_peg.get(red_peg.id) is None
+
             old_board_position = board.track_position_to_board_position(1, Color.RED)
             assert old_board_position is not None and board.get_peg_at_board_position(old_board_position) is None
+            assert board.get_peg_at_track_position(1, Color.RED) is None
 
             assert board.is_peg_on_deck(red_peg) is False
             assert board.is_peg_in_final_slots(red_peg) is True
+
+        def test_can_move_pegs_within_final_slots(self):
+            red_peg = Peg(Color.RED)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, Board.FULL_TRACK_LENGTH - 2)
+            assert board.is_peg_on_deck(red_peg) is False
+
+            board.set_peg_track_position(red_peg, Board.FULL_TRACK_LENGTH - 1)
+
+            assert board.get_peg_at_track_position(Board.FULL_TRACK_LENGTH - 2, Color.RED) is None
 
     class TestSetPegOnDeck:
         def test_moves_peg_from_on_board_to_deck(self):

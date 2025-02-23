@@ -8,6 +8,13 @@ class TestColor:
             assert Color.ordinal(Color.YELLOW) == 2
             assert Color.ordinal(Color.BLUE) == 3
 
+    class TestFromOrdinal:
+        def test_from_ordinal_returns_the_color_at_the_given_index(self):
+            assert Color.from_ordinal(0) == Color.RED
+            assert Color.from_ordinal(1) == Color.GREEN
+            assert Color.from_ordinal(2) == Color.YELLOW
+            assert Color.from_ordinal(3) == Color.BLUE
+
     class TestNext:
         def test_next_returns_the_next_color_in_the_sequence(self):
             assert Color.next(Color.RED) == Color.GREEN
