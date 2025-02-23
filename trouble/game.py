@@ -1,3 +1,5 @@
+import random
+
 from .board import Board
 from .color import Color
 from .action_selector import ActionSelector
@@ -13,7 +15,7 @@ class Game:
 
     def reset(self):
         self.board.reset()
-        self.current_color = Color.RED
+        self.current_color = random.choice(list(Color))
 
     @property
     def winner(self) -> Color | None:

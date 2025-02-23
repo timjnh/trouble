@@ -4,7 +4,7 @@ from mock_die import MockDie
 
 class TestGame:
     class TestReset:
-        def test_should_reset_the_board_and_set_current_color_to_red(self):
+        def test_should_reset_the_board(self):
             peg = Peg(Color.RED)
 
             board = Board()
@@ -14,7 +14,6 @@ class TestGame:
 
             game.reset()
 
-            assert game.current_color == Color.RED
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
 
     class TestWinner:
