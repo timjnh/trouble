@@ -27,7 +27,14 @@ class Board:
             if peg is not None:
                 result += f"{peg.color}"
             else:
-                result += "\033[97mO"
+                color = "\033[97m"
+                if i % 7 == 0:
+                    color = Color.color_code(Color.from_ordinal(int(i / 7)))
+                result += f"{color}O"
+        result += "\n\033[97mFinal Slots: "
+        for color in Color:
+            for peg in self.get_pegs_in_final_slots(color):
+                result += f"{peg.color}"
         return result
 
     def reset(self):
@@ -52,15 +59,19 @@ class Board:
         assert self.pegs_by_color_and_track_position[peg.color].get(track_position) is None
 
         board_position = self.track_position_to_board_position(track_position, peg.color)
+        if track_position >= self.INTERIOR_TRACK_LENGTH:
+            board_position = None
         assert board_position not in self.pegs_by_board_position
 
         # remove peg from old position
         old_board_position = self.board_position_by_peg.get(peg.id)
         if old_board_position is not None:
-            old_track_position = self.board_position_to_track_position(old_board_position, peg.color)
             del self.pegs_by_board_position[old_board_position]
+        if self.board_position_by_peg.get(peg.id) is not None:
+            del self.board_position_by_peg[peg.id]
+        old_track_position = self.get_track_position_for_peg(peg)
+        if old_track_position is not None:
             del self.pegs_by_color_and_track_position[peg.color][old_track_position]
-            del self.track_position_by_peg[peg.id]
 
         if board_position is not None:
             self.pegs_by_board_position[board_position] = peg
@@ -71,12 +82,13 @@ class Board:
     def set_peg_on_deck(self, peg: Peg):
         board_position = self.board_position_by_peg.get(peg.id)
         if board_position is not None:
-            del self.board_position_by_peg[peg.id]
             del self.pegs_by_board_position[board_position]
+        if self.board_position_by_peg.get(peg.id) is not None:
+            del self.board_position_by_peg[peg.id]
         track_position = self.track_position_by_peg.get(peg.id)
         if track_position is not None:
             del self.pegs_by_color_and_track_position[peg.color][track_position]
-            del self.track_position_by_peg[peg.id]
+        del self.track_position_by_peg[peg.id]
 
     @property
     def pegs(self) -> List[Peg]:
