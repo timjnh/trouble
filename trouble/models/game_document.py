@@ -15,12 +15,12 @@ class BoardModel(BaseModel):
         for peg in board.get_pegs_on_board():
             board_position = board.get_board_position_for_peg(peg)
             assert board_position is not None
-            color_by_board_position[board_position] = peg.color
+            color_by_board_position[board_position] = str(peg.color)
 
         return cls(
-            on_deck=[peg.color for peg in board.pegs if board.is_peg_on_deck(peg)],
+            on_deck=[str(peg.color) for peg in board.pegs if board.is_peg_on_deck(peg)],
             color_by_board_position=color_by_board_position,
-            final_slots=[peg.color for peg in board.pegs if board.is_peg_in_final_slots(peg)],
+            final_slots=[str(peg.color) for peg in board.pegs if board.is_peg_in_final_slots(peg)],
         )
 
 class TurnModel(BaseModel):
