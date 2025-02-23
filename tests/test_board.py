@@ -184,7 +184,16 @@ class TestBoard:
             assert len(board.get_pegs_on_board(Color.RED)) == 1
 
         def test_returns_all_pegs_on_board(self):
-            assert False
+            red_peg = Peg(Color.RED)
+            green_peg = Peg(Color.GREEN)
+
+            board = Board()
+            board.add_peg_at_track_position(red_peg, 0)
+            board.add_peg_at_track_position(green_peg, 0)
+            board.add_peg(Peg(Color.BLUE))
+            board.add_peg_at_track_position(Peg(Color.YELLOW), Board.FULL_TRACK_LENGTH - 1)
+
+            assert len(board.get_pegs_on_board()) == 2
 
     class TestGetPegsOnDeck:
         def test_returns_all_pegs_on_deck(self):
