@@ -6,10 +6,10 @@ from .action_selector import ActionSelector
 from .die import Die
 
 class Game:
-    def __init__(self, board: Board, action_selector: ActionSelector, die: Die):
+    def __init__(self, board: Board, action_selector: ActionSelector, die: Die, starting_color: Color = Color.RED):
         self.board = board
         self.action_selector = action_selector
-        self.current_color = Color.RED
+        self.current_color = starting_color or random.choice(list(Color))
         self.current_color_turns = 1
         self.die = die
 

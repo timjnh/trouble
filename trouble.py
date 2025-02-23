@@ -1,3 +1,4 @@
+import random
 import asyncio
 from argparse import ArgumentParser
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -24,7 +25,7 @@ def play_game() -> Tuple[Game, List[TurnModel]]:
     action_selector = RandomActionSelector()
     die = DefaultDie()
 
-    game = Game(board, action_selector, die)
+    game = Game(board, action_selector, die, random.choice(list(Color)))
 
     turns: List[TurnModel] = []
     while not game.is_complete:
