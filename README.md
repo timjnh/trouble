@@ -4,12 +4,11 @@ Implements the board game trouble
 
 # Setup
 
-    source .venv/bin/activate
-    pip install -r requirements.txt
+    poetry install
 
 # Tests
 
-    PYTHONPATH=$(pwd) wexec pytest
+    PYTHONPATH=$(pwd) poetry pytest
 
 # Concepts
 
