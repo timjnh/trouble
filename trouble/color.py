@@ -8,16 +8,17 @@ class Color(StrEnum):
     BLUE = 'blue'
 
     def __str__(self) -> str:
-        char = ''
         if(self == Color.RED):
-            char = 'R'
+            return 'R'
         elif(self == Color.YELLOW):
-            char = 'Y'
+            return 'Y'
         elif(self == Color.GREEN):
-            char = 'G'
+            return 'G'
         else:
-            char = 'B' # BLUE
-        return Color.color_code(self) + char
+            return 'B' # BLUE
+        
+    def to_styled_string(self) -> str:
+        return Color.color_code(self) + str(self)
 
     @classmethod
     def ordinal(cls, c: "Color") -> int:
