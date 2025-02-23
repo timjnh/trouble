@@ -15,6 +15,10 @@ Implements the board game trouble
 
     PYTHONPATH=$(pwd) poetry pytest
 
+# Type checking
+
+    pyright -p pyrightconfig.json
+
 # Concepts
 
 - Track - The playing board with respect to a single color. Each color has their own track with position 0 being the first position on the board for that color and position 31 being the final four "home" positions for that color.
