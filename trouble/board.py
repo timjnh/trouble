@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from uuid import UUID
 
@@ -97,7 +97,9 @@ class Board:
     def get_pegs_by_color(self, color: Color) -> List[Peg]:
         return self.pegs_by_color.get(color, [])
 
-    def get_pegs_on_board(self, color: Color) -> List[Peg]:
+    def get_pegs_on_board(self, color: Optional[Color] = None) -> List[Peg]:
+        if color is None:
+            return list(self.pegs_by_board_position.values())
         pegs_by_track_position = self.pegs_by_color_and_track_position[color]
         return [peg for position, peg in pegs_by_track_position.items() if position < self.INTERIOR_TRACK_LENGTH]
 
