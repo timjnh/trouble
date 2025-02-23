@@ -6,8 +6,9 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4.0"
 dependencies = [
+    "beanie (>=1.29.0,<2.0.0)"
 ]
 
 [tool.poetry]

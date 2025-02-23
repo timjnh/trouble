@@ -6,6 +6,11 @@ Implements the board game trouble
 
     poetry install
 
+# Execution
+
+    poetry run python trouble.py
+    poetry run python trouble.py -h # for help
+
 # Tests
 
     PYTHONPATH=$(pwd) poetry pytest
