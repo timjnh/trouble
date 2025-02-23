@@ -20,12 +20,12 @@ class Board:
         result = "\033[97mOn Deck: "
         for color in Color:
             for peg in self.get_pegs_on_deck(color):
-                result += f"{peg.color}"
+                result += f"{peg.color.to_styled_string()}"
         result += "\n"
         for i in range(self.INTERIOR_TRACK_LENGTH):
             peg = self.get_peg_at_board_position(i)
             if peg is not None:
-                result += f"{peg.color}"
+                result += f"{peg.color.to_styled_string()}"
             else:
                 color = "\033[97m"
                 if i % 7 == 0:
@@ -34,7 +34,7 @@ class Board:
         result += "\n\033[97mFinal Slots: "
         for color in Color:
             for peg in self.get_pegs_in_final_slots(color):
-                result += f"{peg.color}"
+                result += f"{peg.color.to_styled_string()}"
         return result
 
     def reset(self):
