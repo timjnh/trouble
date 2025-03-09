@@ -20,7 +20,7 @@ def play_game() -> Tuple[Game, List[TurnModel]]:
     board = Board()
     for color in Color:
         for i in range(4):
-            board.add_peg(Peg((i * Color.ordinal(color)) + 1, color))
+            board.add_peg(Peg((Color.ordinal(color) * 4) + i, color))
 
     action_selector = RandomActionSelector()
     die = DefaultDie()
