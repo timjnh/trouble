@@ -5,7 +5,7 @@ from mock_die import MockDie
 class TestGame:
     class TestReset:
         def test_should_reset_the_board(self):
-            peg = Peg(Color.RED)
+            peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(peg, 0)
@@ -20,7 +20,7 @@ class TestGame:
         def test_returns_the_color_where_all_final_slots_are_full(self):
             board = Board()
 
-            red_pegs = [Peg(Color.RED) for _ in range(4)]
+            red_pegs = [Peg(i, Color.RED) for i in range(4)]
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 1))
 
@@ -31,7 +31,7 @@ class TestGame:
         def test_returns_none_when_no_color_has_all_four_final_slots_full(self):
             board = Board()
 
-            red_pegs = [Peg(Color.RED) for _ in range(4)]
+            red_pegs = [Peg(i, Color.RED) for i in range(4)]
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 2)) # only 3 in final slots
 
@@ -47,7 +47,7 @@ class TestGame:
 
     class TestTakeTurn:
         def test_should_move_the_current_color_based_on_the_die_roll(self):
-            red_peg = Peg(Color.RED)
+            red_peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(red_peg, 0)
@@ -67,7 +67,7 @@ class TestGame:
             assert board.get_track_position_for_peg(red_peg) == 1
 
         def test_should_not_advance_the_current_color_if_a_6_is_rolled(self):
-            red_peg = Peg(Color.RED)
+            red_peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg(red_peg)
@@ -86,7 +86,7 @@ class TestGame:
             assert board.get_track_position_for_peg(red_peg) == 0
 
         def test_should_not_advance_the_current_color_if_the_peg_lands_on_a_double_turn_location(self):
-            red_peg = Peg(Color.RED)
+            red_peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(red_peg, 0)
@@ -105,7 +105,7 @@ class TestGame:
             assert board.get_track_position_for_peg(red_peg) == 3
 
         def test_should_give_two_extra_turns_for_a_6_and_a_double_turn_location(self):
-            red_peg = Peg(Color.RED)
+            red_peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(red_peg, 4)

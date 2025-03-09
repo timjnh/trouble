@@ -19,8 +19,8 @@ args = parser.parse_args()
 def play_game() -> Tuple[Game, List[TurnModel]]:
     board = Board()
     for color in Color:
-        for _ in range(4):
-            board.add_peg(Peg(color))
+        for i in range(4):
+            board.add_peg(Peg((i * Color.ordinal(color)) + 1, color))
 
     action_selector = RandomActionSelector()
     die = DefaultDie()

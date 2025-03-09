@@ -2,7 +2,7 @@ from typing import List, Dict, Optional
 
 from uuid import UUID
 
-from .peg import Peg
+from .peg import Peg, PegId
 from .color import Color
 
 class Board:
@@ -12,9 +12,9 @@ class Board:
     def __init__(self):
         self.pegs_by_color: Dict[Color, List[Peg]] = {}
         self.pegs_by_color_and_track_position: Dict[Color, Dict[int, Peg]] = { color: {} for color in Color }
-        self.track_position_by_peg: Dict[UUID, int] = {}
+        self.track_position_by_peg: Dict[PegId, int] = {}
         self.pegs_by_board_position: Dict[int, Peg] = {}
-        self.board_position_by_peg: Dict[UUID, int] = {}
+        self.board_position_by_peg: Dict[PegId, int] = {}
 
     def __str__(self) -> str:
         result = "\033[97mOn Deck: "
