@@ -2,26 +2,33 @@ from beanie import Document
 from typing import List, Dict
 from pydantic import BaseModel
 
-from ..board import Board
+from .. import Board, Color
 
 class BoardModel(BaseModel):
-    on_deck: List[str]
-    color_by_board_position: Dict[int, str]
-    final_slots: List[str]
+    red: List[int]
+    green: List[int]
+    yellow: List[int]
+    blue: List[int]
 
     @classmethod
     def from_board(cls, board: Board) -> "BoardModel":
-        color_by_board_position: Dict[int, str] = {}
-        for peg in board.get_pegs_on_board():
-            board_position = board.get_board_position_for_peg(peg)
-            assert board_position is not None
-            color_by_board_position[board_position] = str(peg.color)
+        peg_positions_by_color: Dict[str, List[int]] = {}
 
-        return cls(
-            on_deck=[str(peg.color) for peg in board.pegs if board.is_peg_on_deck(peg)],
-            color_by_board_position=color_by_board_position,
-            final_slots=[str(peg.color) for peg in board.pegs if board.is_peg_in_final_slots(peg)],
-        )
+        for color in Color:
+            peg_positions_by_color[color] = []
+
+            pegs = board.get_pegs_by_color(color)
+            sorted_pegs = sorted(pegs, key=lambda peg: peg.id)
+
+            for peg in sorted_pegs:
+                if board.is_peg_on_deck(peg):
+                    peg_positions_by_color[color].append(-1)
+                else:
+                    track_position = board.get_track_position_for_peg(peg)
+                    assert track_position is not None
+                    peg_positions_by_color[color].append(track_position)
+
+        return cls(**peg_positions_by_color)
 
 class TurnModel(BaseModel):
     color: str
