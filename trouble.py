@@ -7,6 +7,7 @@ from typing import List, Tuple
 
 from trouble import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
 from trouble.models import GameDocument, TurnModel, BoardModel
+from trouble.repositories import GameRepository
 from trouble.training import Trainer
 
 def play_game() -> Tuple[Game, List[TurnModel]]:
@@ -50,6 +51,8 @@ async def connect_to_mongo(mongo_uri: str, mongo_db):
     await init_beanie(database=mongo_client[mongo_db], document_models=[GameDocument])
 
 async def generate(args: Namespace):
+    game_repository = GameRepository()
+    
     if args.persist:
         await connect_to_mongo(args.mongo_uri, args.mongo_db)
 
@@ -63,7 +66,8 @@ async def generate(args: Namespace):
         if args.persist:
             assert game.winner is not None
             game_document = GameDocument(turns=turns, winner=str(game.winner))
-            await game_document.insert()
+
+            await game_repository.add(game_document)
 
 async def train(args: Namespace):
     await connect_to_mongo(args.mongo_uri, args.mongo_db)
