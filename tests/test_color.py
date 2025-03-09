@@ -15,6 +15,13 @@ class TestColor:
             assert Color.from_ordinal(2) == Color.YELLOW
             assert Color.from_ordinal(3) == Color.BLUE
 
+    class TestFromString:
+        def test_from_string_returns_the_color_for_the_given_string(self):
+            assert Color.from_string('R') == Color.RED
+            assert Color.from_string('G') == Color.GREEN
+            assert Color.from_string('Y') == Color.YELLOW
+            assert Color.from_string('B') == Color.BLUE
+
     class TestNext:
         def test_next_returns_the_next_color_in_the_sequence(self):
             assert Color.next(Color.RED) == Color.GREEN
