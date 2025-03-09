@@ -17,6 +17,17 @@ class Color(StrEnum):
         else:
             return 'B' # BLUE
         
+    @classmethod
+    def from_string(cls, color: str) -> "Color":
+        if color == 'R':
+            return Color.RED
+        elif color == 'G':
+            return Color.GREEN
+        elif color == 'Y':
+            return Color.YELLOW
+        else:
+            return Color.BLUE
+        
     def to_styled_string(self) -> str:
         return Color.color_code(self) + str(self)
 
