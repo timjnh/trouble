@@ -6,7 +6,7 @@ class GameRepository:
     def add(self, game: GameDocument) -> Coroutine[Any, Any, GameDocument]:
         return game.insert()
     
-    async def total_turns(self) -> Coroutine[Any, Any, int]:
+    async def total_turns(self) -> int:
         pipeline = [
             { "$unwind": { "path": "$turns" } },
             { "$count": "total_turns" }
