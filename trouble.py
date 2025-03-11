@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 from trouble import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
 from trouble.models import GameDocument, TurnModel, BoardModel
-from trouble.repositories import GameRepository
+from trouble.repositories import GameRepository, ModelRepository
 from trouble.training import Trainer, ThreeLayerModel
 
 def play_game() -> Tuple[Game, List[TurnModel]]:
@@ -72,11 +72,21 @@ async def generate(args: Namespace):
 async def train(args: Namespace):
     await connect_to_mongo(args.mongo_uri, args.mongo_db)
 
-    model = ThreeLayerModel()
+    model = ThreeLayerModel("3_layer_model")
     model.build()
 
     trainer = Trainer()
     await trainer.train(model)
+
+    training_accuracy = model.calculate_accuracy(trainer.X_train, trainer.Y_train)
+    test_accuracy = model.calculate_accuracy(trainer.X_test, trainer.Y_test)
+
+    print(f'Training accuracy: {training_accuracy}')
+    print(f'Test accuracy: {test_accuracy}')
+
+    if args.persist:
+        ModelRepository().save(model)
+
     print("Training complete!")
 
 parser = ArgumentParser(description="Play, generate and train machine-learning solutions on the game of Trouble")
@@ -93,6 +103,7 @@ generate_parser.set_defaults(call=generate)
 train_parser = subparsers.add_parser("train", help="Train a machine-learning model on saved games")
 train_parser.add_argument("--mongo-uri", type=str, default="mongodb://localhost:27017/", help="MongoDB URI")
 train_parser.add_argument("--mongo-db", type=str, default="trouble", help="MongoDB database name")
+train_parser.add_argument("--persist", action="store_true", help="Persist the trained model to disk")
 train_parser.set_defaults(call=train)
 
 args = parser.parse_args()
