@@ -1,3 +1,4 @@
-__all__ = ["GameRepository"]
+__all__ = ["GameRepository", "ModelRepository"]
 
 from .game_repository import GameRepository
+from .model_repository import ModelRepository
