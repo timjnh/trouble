@@ -8,7 +8,7 @@ from typing import List, Tuple
 from trouble import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
 from trouble.models import GameDocument, TurnModel, BoardModel
 from trouble.repositories import GameRepository
-from trouble.training import Trainer
+from trouble.training import Trainer, ThreeLayerModel
 
 def play_game() -> Tuple[Game, List[TurnModel]]:
     board = Board()
@@ -72,8 +72,11 @@ async def generate(args: Namespace):
 async def train(args: Namespace):
     await connect_to_mongo(args.mongo_uri, args.mongo_db)
 
+    model = ThreeLayerModel()
+    model.build()
+
     trainer = Trainer()
-    await trainer.train()
+    await trainer.train(model)
     print("Training complete!")
 
 parser = ArgumentParser(description="Play, generate and train machine-learning solutions on the game of Trouble")
