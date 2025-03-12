@@ -1,4 +1,4 @@
-from trouble import Board, Color, Peg
+from trouble.gameplay import Board, Color, Peg
 from trouble.generation import BoardModel
 
 class TestBoardModel:

@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from typing import List, Tuple
 
-from trouble import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
+from trouble.gameplay import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
 from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
 from trouble.training import ModelRepository
 from trouble.training import Trainer, ThreeLayerModel

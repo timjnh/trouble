@@ -1,5 +1,5 @@
-from trouble import Board, Color, RandomActionSelector
-from trouble.actions import NoneAction
+from trouble.gameplay import Board, Color, RandomActionSelector
+from trouble.gameplay.actions import NoneAction
 
 class TestRandomActionSelector:
     class TestSelectAction:
