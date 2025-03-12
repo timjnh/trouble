@@ -3,3 +3,6 @@
 
 # venv
 .venv/**
+
+# test artifacts
+models/test_model/**
