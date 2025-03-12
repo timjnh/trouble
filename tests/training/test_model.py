@@ -6,7 +6,7 @@ from trouble.training import Model
 class SimpleModel(Model):
     def __init__(self, id: str):
         super().__init__(id)
-        self.epochs = 2
+        self.epochs = 3
 
     def build(self):
         self._model = Sequential([
