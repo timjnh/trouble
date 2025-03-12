@@ -1,7 +1,6 @@
 import pytest
 
-from trouble.repositories import ModelRepository, NoSuchModelError
-from trouble.training import ThreeLayerModel
+from trouble.training import ThreeLayerModel, ModelRepository, NoSuchModelError
 
 class TestModelRepository:
     class TestSaveAndFind:
