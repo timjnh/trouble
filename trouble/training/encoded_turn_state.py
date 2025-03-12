@@ -1,7 +1,7 @@
 import numpy
 from numpy.typing import NDArray
 
-from ..models import TurnModel
+from ..generation import TurnModel
 from .. import Color
 
 class EncodedTurnState:

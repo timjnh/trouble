@@ -1,5 +1,4 @@
-from trouble.repositories import GameRepository
-from trouble.models import GameDocument, TurnModel, BoardModel
+from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
 
 class TestGameRepository:
     class TestTotalTurns:

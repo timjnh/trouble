@@ -1,6 +1,6 @@
 import numpy
 
-from trouble.models import TurnModel, BoardModel
+from trouble.generation import TurnModel, BoardModel
 from trouble.training import EncodedTurnState
 from trouble import Color
 
