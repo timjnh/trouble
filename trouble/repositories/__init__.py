@@ -1,4 +1,3 @@
-__all__ = ["GameRepository", "ModelRepository", "NoSuchModelError"]
+__all__ = ["GameRepository"]
 
 from .game_repository import GameRepository
-from .model_repository import ModelRepository, NoSuchModelError

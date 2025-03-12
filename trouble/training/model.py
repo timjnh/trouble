@@ -10,6 +10,7 @@ class Model(ABC):
     def __init__(self, id: Optional[str]):
         self.id: Optional[str] = id
         self._model: Optional[keras.Model] = None
+        self.epochs = 10
 
     @abstractmethod
     def build(self):
@@ -17,7 +18,7 @@ class Model(ABC):
 
     def fit(self, X: NDArray[numpy.int8], Y: NDArray[numpy.int8]):
         assert self._model is not None
-        self._model.fit(X, Y, epochs=10)
+        self._model.fit(X, Y, epochs=self.epochs)
 
     def calculate_accuracy(self, X: NDArray[numpy.int8], Y: NDArray[numpy.int8]) -> float:
         assert self._model is not None
