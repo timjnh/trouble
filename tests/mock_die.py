@@ -1,6 +1,6 @@
 from typing import List
 
-from trouble.die import Die
+from trouble.gameplay.die import Die
 
 class MockDie(Die):
     def __init__(self, rolls: List[int], sides: int | None = None):

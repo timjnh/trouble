@@ -1,6 +1,6 @@
 import pytest
 
-from trouble import Board, Peg, Color
+from trouble.gameplay import Board, Peg, Color
 
 class TestBoard:
     class TestReset:

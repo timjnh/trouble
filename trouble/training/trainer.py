@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from numpy.typing import NDArray
 from typing import Optional
 
-from .. import Color
+from ..gameplay import Color
 from ..generation import GameDocument, GameRepository
 from .encoded_turn_state import EncodedTurnState
 from .model import Model

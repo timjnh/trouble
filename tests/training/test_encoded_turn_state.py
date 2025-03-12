@@ -2,7 +2,7 @@ import numpy
 
 from trouble.generation import TurnModel, BoardModel
 from trouble.training import EncodedTurnState
-from trouble import Color
+from trouble.gameplay import Color
 
 class TestEncodedBoardState:
     class TestEncode:

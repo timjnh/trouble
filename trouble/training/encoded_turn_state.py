@@ -2,7 +2,7 @@ import numpy
 from numpy.typing import NDArray
 
 from ..generation import TurnModel
-from .. import Color
+from ..gameplay import Color
 
 class EncodedTurnState:
     # Current color + number of turns + location of all 16 pegs

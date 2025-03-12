@@ -1,4 +1,4 @@
-from trouble.default_die import DefaultDie
+from trouble.gameplay.default_die import DefaultDie
 
 class TestDefaultDie:
     class TestRoll:

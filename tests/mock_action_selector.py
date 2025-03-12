@@ -1,6 +1,6 @@
 from typing import List
 
-from trouble import ActionSelector, SelectedAction, Color, Board
+from trouble.gameplay import ActionSelector, SelectedAction, Color, Board
 
 class MockActionSelector(ActionSelector):
     def __init__(self, actions: List[SelectedAction]):

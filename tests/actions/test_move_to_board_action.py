@@ -1,4 +1,4 @@
-from trouble import Color, Peg, MoveToBoardAction, Board
+from trouble.gameplay import Color, Peg, MoveToBoardAction, Board
 
 class TestMoveToBoardAction:
     class TestGetApplicablePegs:

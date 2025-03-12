@@ -1,4 +1,4 @@
-from trouble import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction, MoveAction
+from trouble.gameplay import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction, MoveAction
 from mock_action_selector import MockActionSelector
 from mock_die import MockDie
 

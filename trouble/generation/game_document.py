@@ -2,7 +2,7 @@ from beanie import Document
 from typing import List, Dict
 from pydantic import BaseModel
 
-from .. import Board, Color
+from .. gameplay import Board, Color
 
 class BoardModel(BaseModel):
     red: List[int]

@@ -1,4 +1,4 @@
-from trouble import Color
+from trouble.gameplay import Color
 
 class TestColor:
     class TestOrdinal:
