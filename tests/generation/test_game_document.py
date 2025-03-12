@@ -1,5 +1,5 @@
 from trouble import Board, Color, Peg
-from trouble.models import BoardModel
+from trouble.generation import BoardModel
 
 class TestBoardModel:
     class TestFromBoard:

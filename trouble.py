@@ -6,8 +6,8 @@ from beanie import init_beanie
 from typing import List, Tuple
 
 from trouble import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
-from trouble.models import GameDocument, TurnModel, BoardModel
-from trouble.repositories import GameRepository, ModelRepository
+from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
+from trouble.training import ModelRepository
 from trouble.training import Trainer, ThreeLayerModel
 
 def play_game() -> Tuple[Game, List[TurnModel]]:

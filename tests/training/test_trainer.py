@@ -2,8 +2,7 @@ import numpy
 from numpy.typing import NDArray
 
 from trouble.training import Trainer, Model, EncodedTurnState
-from trouble.models import GameDocument, TurnModel, BoardModel
-from trouble.repositories import GameRepository
+from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
 
 class MockModel(Model):
     def __init__(self):

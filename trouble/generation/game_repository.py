@@ -1,6 +1,6 @@
 from typing import Any, Coroutine
 
-from ..models import GameDocument
+from . import GameDocument
 
 class GameRepository:
     def add(self, game: GameDocument) -> Coroutine[Any, Any, GameDocument]:

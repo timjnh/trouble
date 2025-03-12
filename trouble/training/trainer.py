@@ -5,8 +5,7 @@ from numpy.typing import NDArray
 from typing import Optional
 
 from .. import Color
-from ..models import GameDocument
-from ..repositories import GameRepository
+from ..generation import GameDocument, GameRepository
 from .encoded_turn_state import EncodedTurnState
 from .model import Model
 
