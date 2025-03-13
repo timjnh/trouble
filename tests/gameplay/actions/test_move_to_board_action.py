@@ -8,8 +8,8 @@ class TestMoveToBoardAction:
             board = Board()
             board.add_peg(peg)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            assert action.get_applicable_pegs() == [peg]
+            action = MoveToBoardAction(6, Color.RED)
+            assert action.get_applicable_pegs(board) == [peg]
 
         def test_should_return_an_on_deck_peg_if_die_roll_is_6_and_start_position_is_occupied_by_another_color(self):
             red_peg = Peg(1, Color.RED)
@@ -23,8 +23,8 @@ class TestMoveToBoardAction:
             green_track_position = board.board_position_to_track_position(board_start_position, Color.GREEN)
             board.add_peg_at_track_position(green_peg, green_track_position)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            assert action.get_applicable_pegs() == [red_peg]
+            action = MoveToBoardAction(6, Color.RED)
+            assert action.get_applicable_pegs(board) == [red_peg]
 
         def test_should_return_an_empty_list_if_die_roll_is_6_and_start_position_is_occupied_by_same_color(self):
             peg_1 = Peg(1, Color.RED)
@@ -34,8 +34,8 @@ class TestMoveToBoardAction:
             board.add_peg(peg_1)
             board.add_peg_at_track_position(peg_2, 0)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            assert action.get_applicable_pegs() == []
+            action = MoveToBoardAction(6, Color.RED)
+            assert action.get_applicable_pegs(board) == []
 
         def test_should_return_an_empty_list_if_die_roll_is_6_and_no_pegs_on_deck(self):
             peg = Peg(1, Color.RED)
@@ -43,8 +43,8 @@ class TestMoveToBoardAction:
             board = Board()
             board.add_peg_at_track_position(peg, 0)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            assert action.get_applicable_pegs() == []
+            action = MoveToBoardAction(6, Color.RED)
+            assert action.get_applicable_pegs(board) == []
 
         def test_should_return_an_empty_list_if_die_roll_is_not_6(self):
             peg = Peg(1, Color.RED)
@@ -52,8 +52,8 @@ class TestMoveToBoardAction:
             board = Board()
             board.add_peg(peg)
 
-            action = MoveToBoardAction(5, Color.RED, board)
-            assert action.get_applicable_pegs() == []
+            action = MoveToBoardAction(5, Color.RED)
+            assert action.get_applicable_pegs(board) == []
 
     class TestApply:
         def test_should_move_peg_to_position_zero_on_their_track(self):
@@ -62,8 +62,8 @@ class TestMoveToBoardAction:
             board = Board()
             board.add_peg(peg)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            action.apply(peg)
+            action = MoveToBoardAction(6, Color.RED)
+            action.apply(peg, board)
 
             assert board.get_track_position_for_peg(peg) == 0
 
@@ -79,8 +79,8 @@ class TestMoveToBoardAction:
             green_track_position = board.board_position_to_track_position(red_board_start_position, Color.GREEN)
             board.add_peg_at_track_position(green_peg, green_track_position)
 
-            action = MoveToBoardAction(6, Color.RED, board)
-            action.apply(red_peg)
+            action = MoveToBoardAction(6, Color.RED)
+            action.apply(red_peg, board)
 
             assert board.is_peg_on_deck(green_peg)
             assert board.get_track_position_for_peg(red_peg) == 0

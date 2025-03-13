@@ -54,7 +54,7 @@ class TestGame:
 
             actions = [
                 SelectedAction(
-                    MoveAction(1, Color.RED, board),
+                    MoveAction(1, Color.RED),
                     red_peg
                 )
             ]
@@ -74,7 +74,7 @@ class TestGame:
 
             actions = [
                 SelectedAction(
-                    MoveToBoardAction(6, Color.RED, board),
+                    MoveToBoardAction(6, Color.RED),
                     red_peg
                 )
             ]
@@ -93,7 +93,7 @@ class TestGame:
 
             actions = [
                 SelectedAction(
-                    MoveAction(3, Color.RED, board),
+                    MoveAction(3, Color.RED),
                     red_peg
                 )
             ]
@@ -112,15 +112,15 @@ class TestGame:
 
             actions = [
                 SelectedAction(
-                    MoveAction(6, Color.RED, board),
+                    MoveAction(6, Color.RED),
                     red_peg
                 ),
                 SelectedAction(
-                    MoveAction(1, Color.RED, board),
+                    MoveAction(1, Color.RED),
                     red_peg
                 ),
                 SelectedAction(
-                    MoveAction(1, Color.RED, board),
+                    MoveAction(1, Color.RED),
                     red_peg
                 )
             ]

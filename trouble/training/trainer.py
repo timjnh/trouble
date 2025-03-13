@@ -2,10 +2,10 @@ import numpy
 from sklearn.model_selection import train_test_split
 
 from numpy.typing import NDArray
-from typing import Optional
+from typing import Optional, Dict, List
 
 from ..gameplay import Color
-from ..generation import GameDocument, GameRepository
+from ..generation import GameRepository
 from .encoded_turn_state import EncodedTurnState
 from .model import Model
 
@@ -22,11 +22,19 @@ class Trainer:
         X = numpy.zeros((turns_count, EncodedTurnState.SIZE))
         Y = numpy.zeros((turns_count, 1))
 
-        games = GameDocument.find()
+        games = game_repository.find_all()
         i = 0
         async for game in games:
             for turn in game.turns:
-                X[i] = EncodedTurnState.encode(turn)
+                track_positions: Dict[Color, List[int]] = {}
+                for color in Color:
+                    track_positions[color] = turn.board.model_dump()[color.lower()]
+                                                                     
+                X[i] = EncodedTurnState.encode(
+                    Color.from_string(turn.color),
+                    turn.color_turns,
+                    track_positions
+                )
                 Y[i] = game.winner == str(Color.RED)
                 i += 1
 

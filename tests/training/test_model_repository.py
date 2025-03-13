@@ -13,11 +13,11 @@ class TestModelRepository:
 
             repository.save(model)
 
-            found_model = repository.find(id)
+            found_model = repository.find_by_id(id)
 
             assert isinstance(found_model, ThreeLayerModel)
 
             repository.delete(id)
 
             with pytest.raises(NoSuchModelError):
-                repository.find(id)
+                repository.find_by_id(id)

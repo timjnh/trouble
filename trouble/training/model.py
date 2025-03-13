@@ -22,10 +22,23 @@ class Model(ABC):
 
     def calculate_accuracy(self, X: NDArray[numpy.int8], Y: NDArray[numpy.int8]) -> float:
         assert self._model is not None
-        Y_pred = self._model.predict(X)
-        Y_sigmoid = tensorflow.math.sigmoid(Y_pred)
-        Y_errors = numpy.where(Y_sigmoid >= 0.5, 1, 0)
-        return numpy.mean(Y_errors == Y)
+        Y_sigmoid = self._predict_sigmoid(X)
+        Y_pred = numpy.where(Y_sigmoid >= 0.5, 1, 0)
+        return float(numpy.mean(Y_pred == Y))
+    
+    def predict_with_threshold(self, X: NDArray[numpy.int8], threshold: float = 0.5) -> bool:
+        return bool(self.predict(X) >= threshold)
+
+    def predict(self, X: NDArray[numpy.int8]) -> numpy.float32:
+        assert self._model is not None
+        assert len(X.shape) == 1
+        Y_sigmoid = self._predict_sigmoid(X.reshape((1, X.shape[0])))
+        return Y_sigmoid[0][0]
+    
+    def _predict_sigmoid(self, X: NDArray[numpy.int8]) -> NDArray[numpy.float32]:
+        assert self._model is not None
+        Y_pred = self._model.predict(X, verbose="0")
+        return tensorflow.math.sigmoid(Y_pred).numpy()
     
     @property
     def model(self):

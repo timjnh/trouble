@@ -7,8 +7,8 @@ from typing import List, Tuple
 
 from trouble.gameplay import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
 from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
-from trouble.training import ModelRepository
-from trouble.training import Trainer, ThreeLayerModel
+from trouble.training import ModelRepository, Trainer, ThreeLayerModel, EncodedTurnState
+from trouble.evaluation import GameStateRepository, ModelBasedActionSelector
 
 def play_game() -> Tuple[Game, List[TurnModel]]:
     board = Board()
@@ -89,6 +89,18 @@ async def train(args: Namespace):
 
     print("Training complete!")
 
+async def evaluate(args: Namespace):
+    game_state = GameStateRepository().find_by_path(args.path)
+    model = ModelRepository().find_by_id("3_layer_model")
+    
+    selector = ModelBasedActionSelector(model, game_state.color_turns)
+    actions = selector.evaluate_possible_actions(game_state.color, game_state.board, game_state.roll)
+
+    print(f"Color: {game_state.color}, Turns: {game_state.color_turns}, Roll: {game_state.roll}")
+    print("Possible Actions:")
+    for action in actions:
+        print(f"  {action}")
+
 parser = ArgumentParser(description="Play, generate and train machine-learning solutions on the game of Trouble")
 subparsers = parser.add_subparsers(required=True)
 
@@ -105,6 +117,10 @@ train_parser.add_argument("--mongo-uri", type=str, default="mongodb://localhost:
 train_parser.add_argument("--mongo-db", type=str, default="trouble", help="MongoDB database name")
 train_parser.add_argument("--persist", action="store_true", help="Persist the trained model to disk")
 train_parser.set_defaults(call=train)
+
+evaluate_parser = subparsers.add_parser("evaluate", help="Evaluate a sample game state using a trained model")
+evaluate_parser.add_argument("path", type=str, help="Path to the game state to evaluate. See ./sample_game_states")
+evaluate_parser.set_defaults(call=evaluate)
 
 args = parser.parse_args()
 asyncio.run(args.call(args))

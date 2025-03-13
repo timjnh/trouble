@@ -20,7 +20,7 @@ class ModelRepository:
             os.makedirs(model_directory)
         model.model.save(self._path_for_id_and_model_type(model.id, type(model)))
 
-    def find(self, id: str) -> Model:
+    def find_by_id(self, id: str) -> Model:
         model_type = self._get_model_type_for_id(id)
         keras_model = models.load_model(self._path_for_id_and_model_type(id, model_type))
         if keras_model is None:

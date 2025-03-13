@@ -15,9 +15,9 @@ class SelectedAction:
         self.action = action
         self.peg = peg
 
-    def apply(self):
+    def apply(self, board: Board):
         if self.peg is not None:
-            self.action.apply(self.peg)
+            self.action.apply(self.peg, board)
 
 class ActionSelector(ABC):
     @abstractmethod

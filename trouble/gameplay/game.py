@@ -32,7 +32,7 @@ class Game:
         die_roll = self.die.roll()
 
         selected_action = self.action_selector.select_action(self.current_color, self.board, die_roll)
-        selected_action.apply()
+        selected_action.apply(self.board)
 
         if selected_action.peg is not None:
             board_position = self.board.get_board_position_for_peg(selected_action.peg)

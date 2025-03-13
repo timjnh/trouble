@@ -1,6 +1,6 @@
-from typing import List, Dict, Optional
+from copy import deepcopy
 
-from uuid import UUID
+from typing import List, Dict, Optional
 
 from .peg import Peg, PegId
 from .color import Color
@@ -36,6 +36,9 @@ class Board:
             for peg in self.get_pegs_in_final_slots(color):
                 result += f"{peg.color.to_styled_string()}"
         return result
+
+    def copy(self) -> "Board":
+        return deepcopy(self)
 
     def reset(self):
         self.pegs_by_board_position = {}
