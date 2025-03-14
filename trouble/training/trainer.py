@@ -38,7 +38,7 @@ class Trainer:
                 Y[i] = game.winner == str(Color.RED)
                 i += 1
 
-        self._X_train, self._X_test, self._Y_train, self._Y_test = train_test_split(X, Y, test_size=0.4)
+        self._X_train, self._X_test, self._Y_train, self._Y_test = train_test_split(X, Y, test_size=0.3)
         assert self._X_train is not None and self._Y_train is not None
 
         model.fit(self._X_train, self._Y_train)

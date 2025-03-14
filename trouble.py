@@ -72,7 +72,7 @@ async def generate(args: Namespace):
 async def train(args: Namespace):
     await connect_to_mongo(args.mongo_uri, args.mongo_db)
 
-    model = ThreeLayerModel("3_layer_model")
+    model = ThreeLayerModel(args.name or f"3_layer_model_{random.randint(0, 100000)}")
     model.build()
 
     trainer = Trainer()
@@ -91,15 +91,18 @@ async def train(args: Namespace):
 
 async def evaluate(args: Namespace):
     game_state = GameStateRepository().find_by_path(args.path)
-    model = ModelRepository().find_by_id("3_layer_model")
+    model = ModelRepository().find_by_id(args.model_id)
     
     selector = ModelBasedActionSelector(model, game_state.color_turns)
     actions = selector.evaluate_possible_actions(game_state.color, game_state.board, game_state.roll)
+
+    print(f"{game_state.board}\n")
 
     print(f"Color: {game_state.color}, Turns: {game_state.color_turns}, Roll: {game_state.roll}")
     print("Possible Actions:")
     for action in actions:
         print(f"  {action}")
+        print(f"    {str(action.board).replace('\n', '\n    ')}")
 
 parser = ArgumentParser(description="Play, generate and train machine-learning solutions on the game of Trouble")
 subparsers = parser.add_subparsers(required=True)
@@ -115,11 +118,13 @@ generate_parser.set_defaults(call=generate)
 train_parser = subparsers.add_parser("train", help="Train a machine-learning model on saved games")
 train_parser.add_argument("--mongo-uri", type=str, default="mongodb://localhost:27017/", help="MongoDB URI")
 train_parser.add_argument("--mongo-db", type=str, default="trouble", help="MongoDB database name")
-train_parser.add_argument("--persist", action="store_true", help="Persist the trained model to disk")
+train_parser.add_argument("--persist", action="store_true", help="Persist the model to disk")
+train_parser.add_argument("--model-id", type=str, help="ID to use when saving the model. If not provided a random name will be generated. Only valid with --persist.")
 train_parser.set_defaults(call=train)
 
 evaluate_parser = subparsers.add_parser("evaluate", help="Evaluate a sample game state using a trained model")
 evaluate_parser.add_argument("path", type=str, help="Path to the game state to evaluate. See ./sample_game_states")
+evaluate_parser.add_argument("--model-id", type=str, default="3_layer_model", help="ID of the model to use for evaluation")
 evaluate_parser.set_defaults(call=evaluate)
 
 args = parser.parse_args()

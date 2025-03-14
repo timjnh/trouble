@@ -13,9 +13,10 @@ class EvaluatedAction:
     action: Action
     peg: Peg
     prediction: numpy.float32
+    board: Board
 
     def __str__(self):
-        return f"{self.prediction:.2f} - {self.action.__class__.__name__} for peg {self.peg.id}"
+        return f"{self.prediction:.5f} - {self.action.__class__.__name__} for peg {self.peg.id}"
 
 class ModelBasedActionSelector(ActionSelector):
     def __init__(self, model: Model, color_turns: int):
@@ -60,4 +61,4 @@ class ModelBasedActionSelector(ActionSelector):
         turn = EncodedTurnState.encode(peg.color, self._color_turns, track_positions_by_color)
         prediction = self._model.predict(turn)
 
-        return EvaluatedAction(action, peg, prediction)
+        return EvaluatedAction(action, peg, prediction, updated_board)
