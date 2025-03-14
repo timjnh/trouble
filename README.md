@@ -8,8 +8,13 @@ Implements the board game trouble
 
 # Execution
 
-    poetry run python trouble.py
-    poetry run python trouble.py -h # for help
+The following will provide help information on running individual commands:
+
+    poetry run python trouble.py [generate|train|evaluate] -h
+
+- `generate` - Plays games and optionally persists them to mongo
+- `train` - Trains neural networks on generated data. Networks can be persisted to disk
+- `evaluate` - Evaluates persisted networks against specific example states
 
 # Tests
 
