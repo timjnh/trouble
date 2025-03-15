@@ -7,7 +7,7 @@ class MockActionSelector(ActionSelector):
         self.actions = actions
         self._position = 0
 
-    def select_action(self, color: Color, board: Board, die_roll: int) -> SelectedAction:
+    def select_action(self, color: Color, board: Board, die_roll: int, color_turns: int) -> SelectedAction:
         action = self.actions[self._position]
         if self._position < len(self.actions) - 1:
             self._position += 1

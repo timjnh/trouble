@@ -6,9 +6,9 @@ from .action_selector import ActionSelector
 from .die import Die
 
 class Game:
-    def __init__(self, board: Board, action_selector: ActionSelector, die: Die, starting_color: Color = Color.RED):
+    def __init__(self, board: Board, action_selectors: dict[Color, ActionSelector], die: Die, starting_color: Color = Color.RED):
         self.board = board
-        self.action_selector = action_selector
+        self.action_selectors = action_selectors
         self.current_color = starting_color or random.choice(list(Color))
         self.current_color_turns = 1
         self.die = die
@@ -31,7 +31,8 @@ class Game:
     def take_turn(self):
         die_roll = self.die.roll()
 
-        selected_action = self.action_selector.select_action(self.current_color, self.board, die_roll)
+        action_selector = self.action_selectors[self.current_color]
+        selected_action = action_selector.select_action(self.current_color, self.board, die_roll, self.current_color_turns)
         selected_action.apply(self.board)
 
         if selected_action.peg is not None:

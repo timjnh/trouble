@@ -7,6 +7,6 @@ class TestRandomActionSelector:
             board = Board()
 
             selector = RandomActionSelector()
-            selected_action = selector.select_action(Color.RED, board, 1)
+            selected_action = selector.select_action(Color.RED, board, 1, 1)
             assert isinstance(selected_action.action, NoneAction)
             assert selected_action.peg is None

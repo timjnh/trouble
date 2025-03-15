@@ -7,7 +7,7 @@ from .color import Color
 from .actions import Action, MoveToBoardAction, MoveAction, NoneAction
 
 class RandomActionSelector(ActionSelector):
-    def select_action(self, color: Color, board: Board, die_roll: int) -> SelectedAction:
+    def select_action(self, color: Color, board: Board, die_roll: int, color_turns: int) -> SelectedAction:
         possible_actions: List[Action] = [
             MoveToBoardAction(die_roll, color),
             MoveAction(die_roll, color)

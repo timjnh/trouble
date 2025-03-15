@@ -4,7 +4,8 @@ __all__ = [
     "Game",
     "Peg",
     "DefaultDie",
-    "RandomActionSelector"
+    "RandomActionSelector",
+    "ActionSelector"
 ]
 
 from .board import *

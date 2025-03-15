@@ -1,47 +1,53 @@
-from trouble.gameplay import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction, MoveAction
+import pytest
+
+from trouble.gameplay import Game, Board, Peg, Color, DefaultDie, RandomActionSelector, MoveToBoardAction, SelectedAction, MoveAction, ActionSelector
 from mock_action_selector import MockActionSelector
 from mock_die import MockDie
 
 class TestGame:
+    @pytest.fixture
+    def action_selectors(self):
+        return { color: RandomActionSelector() for color in Color }
+
     class TestReset:
-        def test_should_reset_the_board(self):
+        def test_should_reset_the_board(self, action_selectors):
             peg = Peg(1, Color.RED)
 
             board = Board()
             board.add_peg_at_track_position(peg, 0)
 
-            game = Game(board, RandomActionSelector(), DefaultDie())
+            game = Game(board, action_selectors, DefaultDie())
 
             game.reset()
 
             assert len(board.get_pegs_on_deck(Color.RED)) == 1
 
     class TestWinner:
-        def test_returns_the_color_where_all_final_slots_are_full(self):
+        def test_returns_the_color_where_all_final_slots_are_full(self, action_selectors):
             board = Board()
 
             red_pegs = [Peg(i, Color.RED) for i in range(4)]
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 1))
 
-            game = Game(board, RandomActionSelector(), DefaultDie())
+            game = Game(board, action_selectors, DefaultDie())
 
             assert game.winner == Color.RED
 
-        def test_returns_none_when_no_color_has_all_four_final_slots_full(self):
+        def test_returns_none_when_no_color_has_all_four_final_slots_full(self, action_selectors):
             board = Board()
 
             red_pegs = [Peg(i, Color.RED) for i in range(4)]
             for i, peg in enumerate(red_pegs):
                 board.add_peg_at_track_position(peg, Board.FULL_TRACK_LENGTH - (i + 2)) # only 3 in final slots
 
-            game = Game(board, RandomActionSelector(), DefaultDie())
+            game = Game(board, action_selectors, DefaultDie())
 
             assert game.winner == None
 
-        def test_returns_none_when_board_has_no_pegs(self):
+        def test_returns_none_when_board_has_no_pegs(self, action_selectors):
             board = Board()
-            game = Game(board, RandomActionSelector(), DefaultDie())
+            game = Game(board, action_selectors, DefaultDie())
 
             assert game.winner is None
 
@@ -58,7 +64,9 @@ class TestGame:
                     red_peg
                 )
             ]
-            game = Game(board, MockActionSelector(actions), MockDie([1]))
+            action_selector = MockActionSelector(actions)
+            action_selectors: dict[Color, ActionSelector] = { color: action_selector for color in Color }
+            game = Game(board, action_selectors, MockDie([1]))
 
             game.take_turn()
 
@@ -78,7 +86,9 @@ class TestGame:
                     red_peg
                 )
             ]
-            game = Game(board, MockActionSelector(actions), MockDie([6]))
+            action_selector = MockActionSelector(actions)
+            action_selectors: dict[Color, ActionSelector] = { color: action_selector for color in Color }
+            game = Game(board, action_selectors, MockDie([6]))
 
             game.take_turn()
 
@@ -97,7 +107,9 @@ class TestGame:
                     red_peg
                 )
             ]
-            game = Game(board, MockActionSelector(actions), MockDie([3]))
+            action_selector = MockActionSelector(actions)
+            action_selectors: dict[Color, ActionSelector] = { color: action_selector for color in Color }
+            game = Game(board, action_selectors, MockDie([3]))
 
             game.take_turn()
 
@@ -124,7 +136,9 @@ class TestGame:
                     red_peg
                 )
             ]
-            game = Game(board, MockActionSelector(actions), MockDie([6, 1, 1]))
+            action_selector = MockActionSelector(actions)
+            action_selectors: dict[Color, ActionSelector] = { color: action_selector for color in Color }
+            game = Game(board, action_selectors, MockDie([6, 1, 1]))
 
             game.take_turn()
 

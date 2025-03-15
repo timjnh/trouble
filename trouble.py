@@ -5,21 +5,19 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from typing import List, Tuple
 
-from trouble.gameplay import Game, Board, RandomActionSelector, DefaultDie, Color, Peg
+from trouble.gameplay import Game, Board, RandomActionSelector, DefaultDie, Color, Peg, ActionSelector
 from trouble.generation import GameDocument, TurnModel, BoardModel, GameRepository
-from trouble.training import ModelRepository, Trainer, ThreeLayerModel, EncodedTurnState
+from trouble.training import ModelRepository, Trainer, ThreeLayerModel
 from trouble.evaluation import GameStateRepository, ModelBasedActionSelector
 
-def play_game() -> Tuple[Game, List[TurnModel]]:
+def play_game(action_selectors: dict[Color, ActionSelector]) -> Tuple[Game, List[TurnModel]]:
     board = Board()
     for color in Color:
         for i in range(4):
             board.add_peg(Peg((Color.ordinal(color) * 4) + i, color))
 
-    action_selector = RandomActionSelector()
     die = DefaultDie()
-
-    game = Game(board, action_selector, die, random.choice(list(Color)))
+    game = Game(board, action_selectors, die, random.choice(list(Color)))
 
     turns: List[TurnModel] = []
     while not game.is_complete:
@@ -56,18 +54,35 @@ async def generate(args: Namespace):
     if args.persist:
         await connect_to_mongo(args.mongo_uri, args.mongo_db)
 
+    action_selectors: dict[Color, ActionSelector] = {
+        Color.RED: RandomActionSelector(),
+        Color.GREEN: RandomActionSelector(),
+        Color.BLUE: RandomActionSelector(),
+        Color.YELLOW: RandomActionSelector(),
+    }
+    if args.red_model_id is not None:
+        model = ModelRepository().find_by_id(args.red_model_id)
+        action_selectors[Color.RED] = ModelBasedActionSelector(model)
+
+    win_counts = {color: 0 for color in Color}
     for i in range(args.num_games):
         i += 1
-        if i % 1000 == 0:
+        if i % 10 == 0:
             print(f"Generating game {i} of {args.num_games}...")
 
-        game, turns = play_game()
+        game, turns = play_game(action_selectors)
+
+        assert game.winner is not None
+        win_counts[game.winner] += 1
 
         if args.persist:
-            assert game.winner is not None
             game_document = GameDocument(turns=turns, winner=str(game.winner))
 
             await game_repository.add(game_document)
+
+    print(f"Game generation complete! Win counts:")
+    for color, count in win_counts.items():
+        print(f"  {color.to_styled_string()}: {count} ({round(count / args.num_games * 100, 2)}%)")
 
 async def train(args: Namespace):
     await connect_to_mongo(args.mongo_uri, args.mongo_db)
@@ -93,8 +108,8 @@ async def evaluate(args: Namespace):
     game_state = GameStateRepository().find_by_path(args.path)
     model = ModelRepository().find_by_id(args.model_id)
     
-    selector = ModelBasedActionSelector(model, game_state.color_turns)
-    actions = selector.evaluate_possible_actions(game_state.color, game_state.board, game_state.roll)
+    selector = ModelBasedActionSelector(model)
+    actions = selector.evaluate_possible_actions(game_state.color, game_state.board, game_state.roll, game_state.color_turns)
 
     print(f"{game_state.board}\n")
 
@@ -113,6 +128,7 @@ generate_parser.add_argument("--mongo-uri", type=str, default="mongodb://localho
 generate_parser.add_argument("--mongo-db", type=str, default="trouble", help="MongoDB database name")
 generate_parser.add_argument("--num-games", "-n", type=int, default=1, help="Number of games to generate")
 generate_parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+generate_parser.add_argument("--red-model-id", type=str, help="ID of the model to use for the red player. If not provided, a random action selector will be used.")
 generate_parser.set_defaults(call=generate)
 
 train_parser = subparsers.add_parser("train", help="Train a machine-learning model on saved games")

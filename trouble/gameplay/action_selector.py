@@ -21,5 +21,5 @@ class SelectedAction:
 
 class ActionSelector(ABC):
     @abstractmethod
-    def select_action(self, color: Color, board: Board, die_roll: int) -> SelectedAction:
+    def select_action(self, color: Color, board: Board, die_roll: int, color_turns: int) -> SelectedAction:
         pass

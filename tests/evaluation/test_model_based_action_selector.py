@@ -28,7 +28,7 @@ class TestModelBasedActionSelector:
     class TestSelectAction:
         def test_should_evaluate_all_possible_moves_against_the_model(self):
             model = MockModel([0.7, 0.5])
-            selector = ModelBasedActionSelector(model, 1)
+            selector = ModelBasedActionSelector(model)
 
             red_peg_1 = Peg(1, Color.RED)
             red_peg_2 = Peg(2, Color.RED)
@@ -45,28 +45,28 @@ class TestModelBasedActionSelector:
                 for i in range(4):
                     board.add_peg(Peg(5 + i + (4 * Color.ordinal(color)), color))
 
-            action = selector.select_action(Color.RED, board, 3)
+            action = selector.select_action(Color.RED, board, 3, 1)
 
             assert action.peg == red_peg_3
             assert isinstance(action.action, MoveAction)
 
         def test_should_return_a_none_action_if_no_actions_are_possible(self):
             model = MockModel([0.7, 0.5])
-            selector = ModelBasedActionSelector(model, 1)
+            selector = ModelBasedActionSelector(model)
 
             board = Board()
             for color in [Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW]:
                 for i in range(4):
                     board.add_peg(Peg(i + (4 * Color.ordinal(color)), color))
 
-            action = selector.select_action(Color.RED, board, 3)
+            action = selector.select_action(Color.RED, board, 3, 1)
 
             assert isinstance(action.action, NoneAction)
 
     class TestEvaluatePossibleActions:
         def test_should_return_a_sorted_listed_of_evaluated_actions(self):
             model = MockModel([0.7, 0.5])
-            selector = ModelBasedActionSelector(model, 1)
+            selector = ModelBasedActionSelector(model)
 
             red_peg_1 = Peg(1, Color.RED)
             red_peg_2 = Peg(2, Color.RED)
@@ -83,7 +83,7 @@ class TestModelBasedActionSelector:
                 for i in range(4):
                     board.add_peg(Peg(5 + i + (4 * Color.ordinal(color)), color))
 
-            actions = selector.evaluate_possible_actions(Color.RED, board, 3)
+            actions = selector.evaluate_possible_actions(Color.RED, board, 3, 1)
 
             assert actions[0].prediction == 0.7
             assert actions[0].peg == red_peg_3
